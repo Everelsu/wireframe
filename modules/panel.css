@@ -1,7 +1,7 @@
 /* === PANEL/POPUP === */
 
 panelview {
-  border-radius: 8px !important;
+  border-radius: var(na-window-border-radius) !important;
   /*! border: 1.5px solid var(--na-color-border) !important; */
   background-color: var(--panel-background) !important;
   color: var(--zen-primary-text) !important;
@@ -20,25 +20,30 @@ panelview box{
 
 @media(-moz-pref("wireframe.contextmenu")){
   .menupopup-arrowscrollbox {
-    background: color-mix(
-    in srgb,
-    var(--zen-primary-color) 55%,
-    transparent
-  ) !important;
+    background: light-dark(
+      color-mix(in srgb, var(--zen-primary-color) 75%, transparent), 
+      color-mix(in srgb, var(--zen-primary-color) 55%, transparent)
+    ) !important;
 
     color: var(--toolbox-textcolor) !important;
-  }
-  
-  .menupopup-arrowscrollbox {
+    
     box-shadow:
-      inset 0 0 0 100vmax rgba(0, 0, 0, 0.2) !important;
+      inset 0 0 0 100vmax light-dark(
+        rgba(255, 255, 255, 0.1),
+        rgba(0, 0, 0, 0.1)
+      ) !important;
   }
+
+  
+/*   .menupopup-arrowscrollbox {
+    filter: brightness(1.5) saturate(1.2);
+  } */
   
   .menupopup-arrowscrollbox::before{
     position: absolute;
     content: "";
     inset: 0;
-    border-radius: 8px !important;
+    border-radius: var(--na-window-border-radius) !important;
     z-index: 0 !important;
     pointer-events: none !important;
     box-shadow: 

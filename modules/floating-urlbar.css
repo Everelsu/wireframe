@@ -4,39 +4,92 @@
 } */
 
 /* URLBAR COLORS */
-#urlbar[breakout-extend] :root:has(.urlbar-page-action[open]) #urlbar-background,
+:root:has(#urlbar[breakout-extend] .urlbar-page-action[open]) .urlbar-background,
 #urlbar[breakout-extend] .urlbar-background,
 #urlbar[breakout-extend] #urlbar-container {
 /*   background-color: var(--zen-primary-color) !important; */
   color: var(--toolbar-textcolor) !important;
 }
 
-#urlbar[open] .urlbar-background {
+/* Urlbar radius: one knob for every state (docked pill, expanded, floating).
+   Zen 1.23's urlbar is a <moz-urlbar> popover; .urlbar-background is still the
+   panel surface, but the expansion states are breakout-extend / :popover-open.
+   corner-shape is pinned to the theme value, otherwise Zen's global
+   superellipse (squircle) applies and a 28px radius will not read as 28px. */
+.urlbar-background {
   border-radius: var(--na-urlbar-border-radius) !important;
+  /* Zen/Firefox also set logical corner longhands with an overhang in the open
+     state, which can make the top corners larger than the chosen radius */
+  border-start-start-radius: var(--na-urlbar-border-radius) !important;
+  border-start-end-radius: var(--na-urlbar-border-radius) !important;
+  border-end-start-radius: var(--na-urlbar-border-radius) !important;
+  border-end-end-radius: var(--na-urlbar-border-radius) !important;
+  corner-shape: var(--wf-shape-urlbar) !important;
+}
+
+#urlbar[open] .urlbar-background {
   background: var(--zen-primary-color) !important;
 }
 
-#urlbar[open] {
+#urlbar:is([open], [breakout-extend], :popover-open) {
   border-radius: var(--na-urlbar-border-radius) !important;
+  corner-shape: var(--wf-shape-urlbar) !important;
+}
+
+/* Results rows and their action chips keep the same corner geometry */
+#urlbar .urlbarView-results,
+#urlbar .urlbarView-results > * {
+  corner-shape: var(--wf-shape-urlbar) !important;
+}
+
+#urlbar[open] {
   overflow: hidden !important;
 }
 
 /* ====== FLOATING TRANSPARENT URLBAR ====== */
-@media(-moz-pref("wireframe.urlbar.blurred")){
-  #urlbar[open] .urlbar-background {
-    background: var(--zen-main-browser-background) !important;
-    opacity: var(--zen-background-opacity) !important;
+@media (-moz-pref("wireframe.urlbar.blurred")) {
+  #urlbar[zen-floating-urlbar="true"][breakout-extend="true"] > .urlbar-background {
+    background: color-mix(
+      in srgb,
+      var(--zen-primary-color) 50%,
+      transparent
+    ) !important;
+  }
+  
+  :root[zen-default-theme] 
+  #urlbar[zen-floating-urlbar="true"][breakout-extend="true"] > .urlbar-background {
+    background: color-mix(
+      in srgb,
+      var(--zen-primary-color) 50%,
+      rgba(0, 0, 0, 0.6)
+    ) !important;
+  }
+  
+  .urlbarView-body-inner:has(.urlbarView-row[selected]) .urlbarView-row[selected] {
+      background-color: color-mix(var(--zen-colors-primary) 15%, transparent) !important;
+    }
 }
 
+@media (-moz-pref("wireframe.urlbar.blurred")) {
 
-  #urlbar[open] {
-    backdrop-filter: blur(24px) brightness(0.55) !important;
+  /* DARK MODE */
+  :root[zen-should-be-dark-mode="true"] #urlbar[open] {
+    backdrop-filter: blur(28px) saturate(160%) brightness(0.8);
+  }
+
+  /* LIGHT MODE */
+  :root[zen-should-be-dark-mode="false"] #urlbar[open] {
+    backdrop-filter: blur(28px) saturate(160%) brightness(1.1);
+  }
+  
+  :root[zen-default-theme] #urlbar[open] {
+    backdrop-filter: blur(28px) saturate(160%) brightness(1);
   }
 }
 
 @media (-moz-pref("wireframe.urlbar.border","wireframe")){
-  #urlbar[open] .urlbar-background {
-    outline: 2px solid var(--na-color-border) !important;
+  #urlbar[zen-floating-urlbar="true"] {
+  --zen-urlbar-background: var(--zen-main-browser-background) !important;
   }
 }
 
@@ -431,29 +484,29 @@
     #urlbar-container:has(#urlbar[breakout-extend]) #identity-box,
     #urlbar-container:has(#urlbar[breakout-extend]) #page-action-buttons,
     #urlbar-container:has(#urlbar[breakout-extend]) #tracking-protection-icon-container,
-    #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-go-button,
+    #urlbar-container:has(#urlbar[breakout-extend]) .urlbar-go-button,
     #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-anon-search-settings {
      display: none !important;
     }
 
-    #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results>.urlbarView-row>.urlbarView-row-inner>.urlbarView-url {
+    #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results>.urlbarView-row>.urlbarView-row-inner>.urlbarView-url {
       margin-inline: 0px !important;
     }
 
-/*     #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results {
+/*     #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results {
       font-size: 1em !important;
     } */
 
     /* Hide/style website icons based on preferences */
     @media (-moz-bool-pref: "wireframe.urlbar.icons.hide") {
-      #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results img {
+      #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results img {
         display: none !important;
       }
     }
 
     @media not (-moz-bool-pref: "wireframe.urlbar.icons.hide") {
       @media (-moz-bool-pref: "wireframe.urlbar.icons.greyscale") {
-        #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results img {
+        #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results img {
           filter: grayscale(100%) !important;
         }
       }
@@ -463,7 +516,7 @@
       margin: 0px !important;
       padding-block: 2px !important;
       padding-inline: 6px !important;
-      border-radius: var(--na-tab-border-radius) !important;
+      border-radius: var(--na-urlbar-border-radius) !important;
     }
 
   /* Hide urlbar results */
@@ -488,7 +541,7 @@
     } */
 
     .urlbarView-body-inner:has(.urlbarView-row[selected]) .urlbarView-row:hover {
-      border-radius: var(--na-tab-border-radius) !important;
+      border-radius: var(--na-urlbar-border-radius) !important;
     }
 
     /* .urlbarView-body-inner:has(.urlbarView-row[selected]) .urlbarView-row[selected] .urlbarView-title {
@@ -751,29 +804,29 @@
     #urlbar-container:has(#urlbar[breakout-extend]) #identity-box,
     #urlbar-container:has(#urlbar[breakout-extend]) #page-action-buttons,
     #urlbar-container:has(#urlbar[breakout-extend]) #tracking-protection-icon-container,
-    #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-go-button,
+    #urlbar-container:has(#urlbar[breakout-extend]) .urlbar-go-button,
     #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-anon-search-settings {
      display: none !important;
     }
 
-    #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results>.urlbarView-row>.urlbarView-row-inner>.urlbarView-url {
+    #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results>.urlbarView-row>.urlbarView-row-inner>.urlbarView-url {
       margin-inline: 0px !important;
     }
 
-/*     #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results {
+/*     #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results {
       font-size: 1em !important;
     } */
 
     /* Hide/style website icons based on preferences */
     @media (-moz-bool-pref: "wireframe.urlbar.icons.hide") {
-      #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results img {
+      #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results img {
         display: none !important;
       }
     }
 
     @media not (-moz-bool-pref: "wireframe.urlbar.icons.hide") {
       @media (-moz-bool-pref: "wireframe.urlbar.icons.greyscale") {
-        #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results img {
+        #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results img {
           filter: grayscale(100%) !important;
         }
       }
@@ -783,7 +836,7 @@
       margin: 0px !important;
       padding-block: 2px !important;
       padding-inline: 6px !important;
-      border-radius: var(--na-tab-border-radius) !important;
+      border-radius: var(--na-urlbar-border-radius) !important;
     }
 
   /* Hide urlbar results */
@@ -808,7 +861,7 @@
     } */
 
     .urlbarView-body-inner:has(.urlbarView-row[selected]) .urlbarView-row:hover {
-      border-radius: var(--na-tab-border-radius) !important;
+      border-radius: var(--na-urlbar-border-radius) !important;
     }
 
     /* .urlbarView-body-inner:has(.urlbarView-row[selected]) .urlbarView-row[selected] .urlbarView-title {
@@ -899,21 +952,21 @@
     #urlbar-container:has(#urlbar[breakout-extend]) #identity-box,
     #urlbar-container:has(#urlbar[breakout-extend]) #page-action-buttons,
     #urlbar-container:has(#urlbar[breakout-extend]) #tracking-protection-icon-container,
-    #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-go-button,
+    #urlbar-container:has(#urlbar[breakout-extend]) .urlbar-go-button,
     #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-anon-search-settings {
      display: none !important;
     }
 
     /* Hide/style website icons based on preferences */
     @media (-moz-bool-pref: "wireframe.urlbar.icons.hide") {
-      #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results img {
+      #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results img {
         display: none !important;
       }
     }
 
     @media not (-moz-bool-pref: "wireframe.urlbar.icons.hide") {
       @media (-moz-bool-pref: "wireframe.urlbar.icons.greyscale") {
-        #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results img {
+        #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results img {
           filter: grayscale(100%) !important;
         }
       }
@@ -1042,29 +1095,29 @@
     #urlbar-container:has(#urlbar[breakout-extend]) #identity-box,
     #urlbar-container:has(#urlbar[breakout-extend]) #page-action-buttons,
     #urlbar-container:has(#urlbar[breakout-extend]) #tracking-protection-icon-container,
-    #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-go-button,
+    #urlbar-container:has(#urlbar[breakout-extend]) .urlbar-go-button,
     #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-anon-search-settings {
      display: none !important;
     }
 
-    #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results>.urlbarView-row>.urlbarView-row-inner>.urlbarView-url {
+    #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results>.urlbarView-row>.urlbarView-row-inner>.urlbarView-url {
       margin-inline: 0px !important;
     }
 
-/*     #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results {
+/*     #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results {
       font-size: 1em !important;
     } */
 
     /* Hide/style website icons based on preferences */
     @media (-moz-bool-pref: "wireframe.urlbar.icons.hide") {
-      #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results img {
+      #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results img {
         display: none !important;
       }
     }
 
     @media not (-moz-bool-pref: "wireframe.urlbar.icons.hide") {
       @media (-moz-bool-pref: "wireframe.urlbar.icons.greyscale") {
-        #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results img {
+        #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results img {
           filter: grayscale(100%) !important;
         }
       }
@@ -1074,7 +1127,7 @@
       margin: 0px !important;
       padding-block: 2px !important;
       padding-inline: 6px !important;
-      border-radius: var(--na-tab-border-radius) !important;
+      border-radius: var(--na-urlbar-border-radius) !important;
     }
 
   /* Hide urlbar results */
@@ -1099,7 +1152,7 @@
     } */
 
     .urlbarView-body-inner:has(.urlbarView-row[selected]) .urlbarView-row:hover {
-      border-radius: var(--na-tab-border-radius) !important;
+      border-radius: var(--na-urlbar-border-radius) !important;
     }
 
     /* .urlbarView-body-inner:has(.urlbarView-row[selected]) .urlbarView-row[selected] .urlbarView-title {
@@ -1363,29 +1416,29 @@
 
     #urlbar-container:has(#urlbar[breakout-extend]) #page-action-buttons,
     #urlbar-container:has(#urlbar[breakout-extend]) #tracking-protection-icon-container,
-    #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-go-button,
+    #urlbar-container:has(#urlbar[breakout-extend]) .urlbar-go-button,
     #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-anon-search-settings {
      display: none !important;
     }
 
-    #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results>.urlbarView-row>.urlbarView-row-inner>.urlbarView-url {
+    #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results>.urlbarView-row>.urlbarView-row-inner>.urlbarView-url {
       margin-inline: 0px !important;
     }
 
-/*     #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results {
+/*     #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results {
       font-size: 1em !important;
     } */
 
     /* Hide/style website icons based on preferences */
     @media (-moz-bool-pref: "wireframe.urlbar.icons.hide") {
-      #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results img {
+      #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results img {
         display: none !important;
       }
     }
 
     @media not (-moz-bool-pref: "wireframe.urlbar.icons.hide") {
       @media (-moz-bool-pref: "wireframe.urlbar.icons.greyscale") {
-        #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results img {
+        #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results img {
           filter: grayscale(100%) !important;
         }
       }
@@ -1395,7 +1448,7 @@
       margin: 0px !important;
       padding-block: 0px !important;
       padding-inline: 0px !important;
-      border-radius: var(--na-tab-border-radius) !important;
+      border-radius: var(--na-urlbar-border-radius) !important;
     }
 
   /* Hide urlbar results */
@@ -1420,7 +1473,7 @@
     } */
 
     .urlbarView-body-inner:has(.urlbarView-row[selected]) .urlbarView-row:hover {
-      border-radius: var(--na-tab-border-radius) !important;
+      border-radius: var(--na-urlbar-border-radius) !important;
     }
 
     /* .urlbarView-body-inner:has(.urlbarView-row[selected]) .urlbarView-row[selected] .urlbarView-title {
@@ -1516,7 +1569,7 @@
   /*   #urlbar-container:has(#urlbar[breakout-extend]) #identity-box,
     #urlbar-container:has(#urlbar[breakout-extend]) #page-action-buttons,
     #urlbar-container:has(#urlbar[breakout-extend]) #tracking-protection-icon-container,
-    #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-go-button,
+    #urlbar-container:has(#urlbar[breakout-extend]) .urlbar-go-button,
     #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-anon-search-settings {
      display: none !important;
     } */
@@ -1530,19 +1583,19 @@
       margin: 0px !important;
       padding-block: 0px !important;
       padding-inline: 0px !important;
-      border-radius: var(--na-tab-border-radius) !important;
+      border-radius: calc(var(--na-urlbar-border-radius) - 4px) !important;
     }
 
     /* Hide/style website icons based on preferences */
     @media (-moz-bool-pref: "wireframe.urlbar.icons.hide") {
-      #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results img {
+      #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results img {
         display: none !important;
       }
     }
 
     @media not (-moz-bool-pref: "wireframe.urlbar.icons.hide") {
       @media (-moz-bool-pref: "wireframe.urlbar.icons.greyscale") {
-        #urlbar-container:has(#urlbar[breakout-extend]) #urlbar-results img {
+        #urlbar-container:has(#urlbar[breakout-extend]) .urlbarView-results img {
           filter: grayscale(100%) !important;
         }
       }
@@ -1562,6 +1615,7 @@
      margin-bottom: 10px !important;
    }
  }
+}
 
 /* === URLBAR OPENING ANIMATIONS === */
 
@@ -1965,45 +2019,5 @@
     }
 }
   
-/* UrlBar border radius pref options */
-@media (-moz-pref("wireframe.urlbar.border_radius", 0)) {
-    :root {
-        --na-urlbar-border-radius: 0px;
-    }
-}
-
-@media (-moz-pref("wireframe.urlbar.border_radius", 4)) {
-    :root {
-        --na-urlbar-border-radius: 4px;
-    }
-}
-
-@media (-moz-pref("wireframe.urlbar.border_radius", 8)) {
-    :root {
-        --na-urlbar-border-radius: 8px;
-    }
-}
-
-@media (-moz-pref("wireframe.urlbar.border_radius", 12)) {
-    :root {
-        --na-urlbar-border-radius: 12px;
-    }
-}
-
-@media (-moz-pref("wireframe.urlbar.border_radius", 16)) {
-    :root {
-        --na-urlbar-border-radius: 16px;
-    }
-}
-
-@media (-moz-pref("wireframe.urlbar.border_radius", 20)) {
-    :root {
-        --na-urlbar-border-radius: 20px;
-    }
-}
-  
-@media (-moz-pref("wireframe.urlbar.border_radius", 24)) {
-    :root {
-        --na-urlbar-border-radius: 24px;
-    }
-}
+/* UrlBar border radius is derived in variables.css from
+   --zen-border-radius × --wf-radius-scale (Zen-like dynamic radius system). */
