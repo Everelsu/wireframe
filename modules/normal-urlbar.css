@@ -25,7 +25,7 @@
   }
   
   /* style - slim, normal */
-  @media (-moz-pref("wireframe.urlbar.style","slim")){
+  @media (-moz-pref("wireframe.urlbar.style","slim")), (-moz-pref("wireframe.urlbar.style","")){
     @media not (-moz-bool-pref:"wireframe.urlbar.position.top"){
       #urlbar[open]{
         left: 23.25% !important;

@@ -18,7 +18,4 @@
 @import url("modules/normal-urlbar.css");
 @import url("modules/pinned-extensions.css");
 @import url("modules/browser.css");
-
-* {
-  font-family: "IosevkaTerm Nerd Font Propo" !important;
-}
+@import url("modules/library.css");

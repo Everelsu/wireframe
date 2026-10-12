@@ -13,11 +13,11 @@ This theme implements customizable preferences using Zen Browser's preference sy
 2. `wireframe.animations.enabled` - Enable animations in Wireframe theme
 3. `wireframe.borders.squared` - Use squared borders
 4. `wireframe.urlbar.position.top` - Position URL bar at the top (for multiple and collapsed toolbar only)
-5. `wireframe.macos.controls` - Disable macOS style window controls
+5. `wireframe.controls.style` - Window controls style: `windows` (default), `macos`, `native`
 6. `zen.view.experimental-force-window-controls-left` - Force window controls to the left (for macOS style controls only)
 7. `wireframe.blank.theme` - Change color scheme for about:blank
 8. `wireframe.blank.content` - Remove logo from about:blank
-9. `wireframe.controls.reverse` - Reverse window controls
+9. `wireframe.controls.reverse` - Reverse window controls (macOS style only)
 10. `wireframe.toolbar.hide` - Auto hide toolbar buttons (Reveal on hover)
 11. `wireframe.navigation.hide` - Disable navigation buttons
 12. `wireframe.statusbar.disable` - Disable status bar

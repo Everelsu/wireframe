@@ -30,10 +30,6 @@
     height: calc(100% - 37px) !important;
   }
   
-  #Zen-tabs-wrapper {
-    max-height: 700px !important;
-  }
-  
   .unified-extensions-item-action-button {
     padding: 0px !important;
   }

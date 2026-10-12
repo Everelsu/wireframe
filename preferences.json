@@ -15,11 +15,25 @@
     "type": "separator"
   },
   {
-    "type": "checkbox",
-    "property": "wireframe.macos.controls",
-    "label": "Disable macOS style window controls",
-    "value": "boolean",
-    "defaultValue": false
+    "type": "dropdown",
+    "property": "wireframe.controls.style",
+    "label": "Window controls style",
+    "value": "string",
+    "defaultValue": "windows",
+    "options": [
+      {
+        "value": "windows",
+        "label": "Windows"
+      },
+      {
+        "value": "macos",
+        "label": "macOS"
+      },
+      {
+        "value": "native",
+        "label": "Native (untouched)"
+      }
+    ]
   },
   {
     "type": "separator"
@@ -37,7 +51,7 @@
   {
     "type": "checkbox",
     "property": "wireframe.controls.reverse",
-    "label": "Reverse window controls",
+    "label": "Reverse window controls (macOS style only)",
     "value": "boolean",
     "defaultValue": false
   },
@@ -47,7 +61,7 @@
   {
     "type": "dropdown",
     "property": "wireframe.macos.controls.radius",
-    "label": "Change macos window control radius",
+    "label": "macOS window controls radius",
     "value": "number",
     "defaultValue": 0,
     "options": [
@@ -73,7 +87,7 @@
     "property": "zen.view.experimental-force-window-controls-left",
     "label": "Force window controls to the left (for macOS style controls only)",
     "value": "boolean",
-    "defaultValue": true,
+    "defaultValue": false,
     "restart": true
   },
   {
@@ -160,7 +174,7 @@
     "property": "wireframe.compact-sidebar.hide",
     "label": "Hide compact sidebar on empty tab",
     "value": "boolean",
-    "default": false
+    "defaultValue": false
   },
   {
     "type": "separator"
@@ -170,7 +184,7 @@
     "property": "wireframe.compact.sidebar.transparent",
     "label": "Make sidebar transparent in compact mode",
     "value": "boolean",
-    "default": false
+    "defaultValue": false
   },
   {
     "type": "separator"
@@ -180,7 +194,7 @@
     "property": "wireframe.contextmenu",
     "label": "Enable glass tint context menu",
     "value": "boolean",
-    "default": false
+    "defaultValue": false
   },
   {
     "type": "separator"
@@ -200,7 +214,7 @@
     "property": "wireframe.nogaps.enabled",
     "label": "Enable no gap for single-toolbar",
     "value": "boolean",
-    "default": false
+    "defaultValue": false
   },
   {
     "type": "separator"
@@ -210,7 +224,7 @@
     "property": "wireframe.nogaps.border.enabled",
     "label": "Show splitter (for no gaps mod)",
     "value": "boolean",
-    "default": false
+    "defaultValue": false
   },
   {
     "type": "separator"
@@ -220,7 +234,7 @@
     "property": "wireframe.pinned-ext.enabled",
     "label": "Enable pinned extensions",
     "value": "boolean",
-    "default": false
+    "defaultValue": false
   },
   {
     "type": "separator"
@@ -230,7 +244,7 @@
     "property": "wireframe.trackpad.animation",
     "label": "Enable trackpad animations",
     "value": "boolean",
-    "default": true
+    "defaultValue": true
   },
   {
     "type": "text",
@@ -246,7 +260,7 @@
     "property": "wireframe.urlbar.style",
     "label": "Change URL bar style",
     "value": "string",
-    "default": "slim",
+    "defaultValue": "slim",
     "options": [
       {
         "value": "slim",
@@ -281,7 +295,7 @@
   {
     "property": "wireframe.urlbar.position.top",
     "label": "Position URL bar at the top (for multiple and collapsed toolbar only)",
-    "default": false,
+    "defaultValue": false,
     "type": "checkbox",
     "value": "boolean"
   },
@@ -403,7 +417,7 @@
     "property": "wireframe.urlbar.icons.hide",
     "label": "Hide website icons in URL bar results",
     "value": "boolean",
-    "default": true
+    "defaultValue": true
   },
   {
     "type": "separator"
@@ -413,7 +427,7 @@
     "property": "wireframe.urlbar.icons.greyscale",
     "label": "Make website icons greyscale in URL bar results",
     "value": "boolean",
-    "default": false
+    "defaultValue": false
   },
   {
     "type": "text",
@@ -432,7 +446,7 @@
     "defaultValue": "wireframe",
     "options": [
       {
-        "value": 0,
+        "value": "none",
         "label": "No Logo"
       },
       {
@@ -535,7 +549,7 @@
     "property": "wireframe.blank.theme",
     "label": "Change color scheme for about:blank",
     "value": "number",
-    "default": 0,
+    "defaultValue": 0,
     "options": [
       {
         "value": 0,
@@ -639,7 +653,7 @@
     "property": "wireframe.new-tab.label",
     "label": "Enable custom new tab label",
     "value": "boolean",
-    "default": true
+    "defaultValue": true
   },
   {
     "type": "separator"
@@ -649,7 +663,7 @@
     "property": "wireframe.new-tab.reveal.animation",
     "label": "Enable reveal on hover animation for new tab",
     "value": "boolean",
-    "default": true
+    "defaultValue": true
   },
   {
     "type": "separator"
@@ -659,7 +673,7 @@
     "property": "zen.theme.essentials-favicon-bg",
     "label": "Enable favicon gradient background for essentials",
     "value": "boolean",
-    "default": true
+    "defaultValue": true
   },
   {
     "type": "separator"
@@ -669,7 +683,7 @@
     "property": "wireframe.audio.indicator.disable",
     "label": "Disable audio indicator on tab",
     "value": "boolean",
-    "default": false
+    "defaultValue": false
   },
   {
     "type": "separator"
@@ -679,7 +693,7 @@
     "property": "wireframe.tab-hover.animation",
     "label": "Enable tab hover animation",
     "value": "boolean",
-    "default": true
+    "defaultValue": true
   },
   {
     "type": "separator"
@@ -689,7 +703,7 @@
     "property": "wireframe.tab-icon.invert",
     "label": "Invert tab icon color",
     "value": "boolean",
-    "default": true
+    "defaultValue": true
   },
   {
     "type": "separator"
@@ -869,7 +883,7 @@
     "property": "wireframe.macos.border",
     "label": "Enable macOS style border for compact sidebar and other elements",
     "value": "boolean",
-    "default": false
+    "defaultValue": false
   },
   {
     "type": "separator"
@@ -879,7 +893,7 @@
     "property": "wireframe.radius_scale",
     "label": "Corner roundness (all radii)",
     "value": "number",
-    "default": 100,
+    "defaultValue": 100,
     "options": [
       {
         "value": 0,
@@ -919,7 +933,7 @@
     "property": "wireframe.webview.radius_scale",
     "label": "Corner roundness - webview",
     "value": "number",
-    "default": 100,
+    "defaultValue": 100,
     "options": [
       {
         "value": 0,
@@ -959,7 +973,7 @@
     "property": "wireframe.window.radius_scale",
     "label": "Corner roundness - window",
     "value": "number",
-    "default": 100,
+    "defaultValue": 100,
     "options": [
       {
         "value": 0,
@@ -999,7 +1013,7 @@
     "property": "wireframe.tab.radius_scale",
     "label": "Corner roundness - tabs & folders",
     "value": "number",
-    "default": 100,
+    "defaultValue": 100,
     "options": [
       {
         "value": 0,
@@ -1039,7 +1053,7 @@
     "property": "wireframe.essen.radius_scale",
     "label": "Corner roundness - essentials",
     "value": "number",
-    "default": 100,
+    "defaultValue": 100,
     "options": [
       {
         "value": 0,
@@ -1079,7 +1093,7 @@
     "property": "wireframe.urlbar.radius_scale",
     "label": "Corner roundness - urlbar",
     "value": "number",
-    "default": 100,
+    "defaultValue": 100,
     "options": [
       {
         "value": 0,
@@ -1119,7 +1133,7 @@
     "property": "wireframe.squircle",
     "label": "Squircle exponent (corner geometry)",
     "value": "number",
-    "default": 0,
+    "defaultValue": 0,
     "options": [
       {
         "value": 0,
@@ -1367,7 +1381,7 @@
     "property": "wireframe.pip.disabled",
     "label": "Disable Picture-in-Picture customization",
     "value": "boolean",
-    "default": false
+    "defaultValue": false
   },
   {
     "type": "separator"
@@ -1377,7 +1391,7 @@
     "property": "wireframe.pip.rounded",
     "label": "Enable rounded corners for PiP window",
     "value": "boolean",
-    "default": false
+    "defaultValue": false
   },
   {
     "type": "separator"
@@ -1387,7 +1401,7 @@
     "property": "wireframe.pip.border_radius",
     "label": "Border radius for PiP controls",
     "value": "number",
-    "default": 0,
+    "defaultValue": 0,
     "options": [
       {
         "value": 0,
@@ -1419,7 +1433,7 @@
     "property": "wireframe.pip.blur",
     "label": "Enable blur effect on PiP controls",
     "value": "boolean",
-    "default": false
+    "defaultValue": false
   },
   {
     "type": "text",
@@ -1435,7 +1449,7 @@
     "property": "wireframe.player.minimal",
     "label": "Make the Media Player window minimal (pip, volume, and call controls hidden)",
     "value": "boolean",
-    "default": true
+    "defaultValue": true
   },
   {
     "type": "separator"
@@ -1445,6 +1459,6 @@
     "property": "wireframe.player.flip",
     "label": "Flipped media player",
     "value": "boolean",
-    "default": false
+    "defaultValue": false
   }
 ]

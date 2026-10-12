@@ -1,7 +1,11 @@
-@media (-moz-pref("wireframe.blank.theme", 0)) {
+/* 0 = dark tint, also the fallback when the pref is unset/"" */
+@media not (-moz-pref("wireframe.blank.theme", 1)) {
+  @media not (-moz-pref("wireframe.blank.theme", 2)) {
     :root {
         --na-blank-bg: rgba(30, 30, 31, 0.75);
+        --zen-logo-filter: invert(1) hue-rotate(180deg);
     }
+  }
 }
 
 @media (-moz-pref("wireframe.blank.theme", 1)) {
@@ -58,7 +62,7 @@
     height: var(--wf-blank-logo-size, 150px) !important;
     background-image: var(
         --wf-blank-logo,
-        url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/463d91c69f361853f3a6b71a67b1980f79319922/elements/wireframe.svg")
+        url("../elements/wireframe.svg")
     ) !important;
     background-repeat: no-repeat !important;
     background-position: center !important;
@@ -79,11 +83,6 @@
 
 
 /* THEME FILTERS — only affect the logo pseudo, NOT the bg or PiP */
-@media (-moz-pref("wireframe.blank.theme", 0)) {
-    :root {
-        --zen-logo-filter: invert(1) hue-rotate(180deg);
-    }
-}
 @media (-moz-pref("wireframe.blank.theme", 1)) {
     :root {
         --zen-logo-filter: invert(0);
@@ -97,7 +96,7 @@
 
 /* === Logo Options (switchable via wireframe.blank.logo) === */
 
-@media (-moz-pref("wireframe.blank.logo",0)) {
+@media (-moz-pref("wireframe.blank.logo", "none")), (-moz-pref("wireframe.blank.logo", "0")) {
     :root {
         --wf-blank-logo: none;
     }
@@ -109,97 +108,97 @@
 
 @media (-moz-pref("wireframe.blank.logo","wireframe")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/463d91c69f361853f3a6b71a67b1980f79319922/elements/wireframe.svg");
+        --wf-blank-logo: url("../elements/wireframe.svg");
     }
 }
 
 @media (-moz-pref("wireframe.blank.logo","checks")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/463d91c69f361853f3a6b71a67b1980f79319922/elements/checks.svg");
+        --wf-blank-logo: url("../elements/checks.svg");
     }
 }
 
 @media (-moz-pref("wireframe.blank.logo","starlight")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/463d91c69f361853f3a6b71a67b1980f79319922/elements/starlight.svg");
+        --wf-blank-logo: url("../elements/starlight.svg");
     }
 }
 
 @media (-moz-pref("wireframe.blank.logo","rings")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/463d91c69f361853f3a6b71a67b1980f79319922/elements/rings.svg");
+        --wf-blank-logo: url("../elements/rings.svg");
     }
 }
 
 @media (-moz-pref("wireframe.blank.logo","waves")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/3fc526f18c92ae9aacb2372a4655f478aceb333e/elements/waves.svg");
+        --wf-blank-logo: url("../elements/waves.svg");
     }
 }
 
 @media (-moz-pref("wireframe.blank.logo","globe")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/463d91c69f361853f3a6b71a67b1980f79319922/elements/globe.svg");
+        --wf-blank-logo: url("../elements/globe.svg");
     }
 }
 
 @media (-moz-pref("wireframe.blank.logo","smiley")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/463d91c69f361853f3a6b71a67b1980f79319922/elements/smiley.svg");
+        --wf-blank-logo: url("../elements/smiley.svg");
     }
 }
 
 @media (-moz-pref("wireframe.blank.logo","y2k-star")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/3fc526f18c92ae9aacb2372a4655f478aceb333e/elements/y2k-stars.svg");
+        --wf-blank-logo: url("../elements/y2k-stars.svg");
     }
 }
 
 @media (-moz-pref("wireframe.blank.logo","y2k-smiley")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/3fc526f18c92ae9aacb2372a4655f478aceb333e/elements/y2k-smiley.svg");
+        --wf-blank-logo: url("../elements/y2k-smiley.svg");
     }
 }
 
 @media (-moz-pref("wireframe.blank.logo","asterisk")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/3fc526f18c92ae9aacb2372a4655f478aceb333e/elements/asterisk.svg");
+        --wf-blank-logo: url("../elements/asterisk.svg");
     }
 }
 
 @media (-moz-pref("wireframe.blank.logo","arrow")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/dea3ee388719e68fec4ac403b852728b64015101/elements/arrow.svg");
+        --wf-blank-logo: url("../elements/arrow.svg");
     }
 }
 
 @media (-moz-pref("wireframe.blank.logo","barcode")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/463d91c69f361853f3a6b71a67b1980f79319922/elements/barcode.svg");
+        --wf-blank-logo: url("../elements/barcode.svg");
     }
 }
 
 @media (-moz-pref("wireframe.blank.logo","globe-alt")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/463d91c69f361853f3a6b71a67b1980f79319922/elements/globe-2.svg");
+        --wf-blank-logo: url("../elements/globe-2.svg");
     }
 }
 
 @media (-moz-pref("wireframe.blank.logo","sad-face")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/463d91c69f361853f3a6b71a67b1980f79319922/elements/sad.svg");
+        --wf-blank-logo: url("../elements/sad.svg");
     }
 }
 
 @media (-moz-pref("wireframe.blank.logo","y2k-globe")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/463d91c69f361853f3a6b71a67b1980f79319922/elements/y2k-earth.svg");
+        --wf-blank-logo: url("../elements/y2k-earth.svg");
     }
 }
 
 @media (-moz-pref("wireframe.blank.logo","marty-supreme")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/985805e2d24aad964449f1d6a6da8614799b530e/elements/MARTY-SUPREME.svg");
+        --wf-blank-logo: url("../elements/MARTY-SUPREME.svg");
     }
 
     /* Disabling filter for Marty Supreme */
@@ -210,12 +209,12 @@
 
 @media (-moz-pref("wireframe.blank.logo", "eyes")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/c014d9967e02fa49a8bf30564d058d263c10acd8/elements/eyes.svg");
+        --wf-blank-logo: url("../elements/eyes.svg");
     }
 }
 
 @media (-moz-pref("wireframe.blank.logo", "heart-eyes")) {
     :root {
-        --wf-blank-logo: url("https://raw.githubusercontent.com/SehajveerSingh2005/zen-wireframe-2.0/c014d9967e02fa49a8bf30564d058d263c10acd8/elements/heart-eyes.svg");
+        --wf-blank-logo: url("../elements/heart-eyes.svg");
     }
 }

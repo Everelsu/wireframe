@@ -301,55 +301,6 @@
     }
 }
 
-/* container adjustments */
-.zw-mode-container {
-  font-size: 13px;
-  padding: 0 4px;
-}
-
-/* edit button */
-.zw-edit-btn {
-  background: transparent;
-  border: none;
-  color: var(--toolbar-color);
-  padding: 0 6px;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity .2s;
-}
-
-.zen-current-workspace-indicator:hover .zw-edit-btn {
-  opacity: 1;
-}
-
-/* menu */
-.zw-menu {
-  position: absolute;
-  top: 24px;
-  right: 0;
-  background: color-mix(in srgb, var(--toolbar-bgcolor) 70%, transparent);
-  backdrop-filter: blur(6px);
-  border-radius: 8px;
-  padding: 4px 0;
-  display: none;
-  z-index: 999999;
-}
-
-.zw-menu.show {
-  display: block;
-}
-
-.zw-menu div {
-  padding: 6px 14px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.zw-menu div:hover {
-  background: color-mix(in srgb, var(--toolbarbutton-active-bgcolor) 50%, transparent);
-}
-
-
 /* === SIDEBAR FOOT BUTTON REVEAL ON HOVER === */
 
 @media (-moz-pref("wireframe.sidebar-foot.hide")) {
@@ -485,10 +436,6 @@
   } 
 }
 
-#zen-browser-tabs-wrapper stack {
-  margin-block: 1px !important;
-}
-
 /* tabs hover animation */
 @media (-moz-bool-pref:"wireframe.tab-hover.animation"){
   .tabbrowser-tab:hover .tab-label-container,
@@ -557,7 +504,7 @@
   corner-shape: var(--wf-corner-shape) !important;
 }
 
-.zen-essentials-container > .tabbrowser-tab, #zen-welcome-initial-essentials-browser-sidebar-essentials .tabbrowser-tab {
+.zen-essentials-container > .tabbrowser-tab {
   @media -moz-pref("zen.theme.essentials-favicon-bg") {
     &[visuallyselected] > .tab-stack > .tab-background {
       &::after {
@@ -646,20 +593,6 @@ zen-folder {
 :root[zen-sidebar-expanded="true"] #zen-current-workspace-indicator:hover>#zen-current-workspace-indicator-name {
   color: var(--na-color-bg) !important;
 } */
-
-/* sidebar bottom icon padding and direction */
-#zen-sidebar-icons-wrapper {
-  padding-block: 4px !important;
-  padding-inline: 5px !important;
-}
-
-:root[zen-right-side] #zen-sidebar-icons-wrapper {
-  justify-content: flex-end !important;
-}
-
-:root:not([zen-right-side]) #zen-sidebar-icons-wrapper {
-  justify-content: flex-start !important;
-}
 
 /* Zen 1.23+ redesigned the splitter: it is now a floating accent bar that is
    hidden by default (opacity: 0) and fades in on hover/resize.

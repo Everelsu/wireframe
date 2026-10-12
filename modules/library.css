@@ -1,0 +1,85 @@
+/* === ZEN LIBRARY (Media / Downloads / Boosts / Spaces / History) ===
+   Zen 1.23+ panel that slides over the sidebar. Bring it in line with the
+   rest of the theme: flat surfaces, hairline dividers, theme radii/shapes,
+   and the wireframe border on the active space. */
+
+zen-library {
+  --zen-library-radius: var(--na-tab-border-radius);
+  --wf-library-line: color-mix(in srgb, var(--toolbox-textcolor) 14%, transparent);
+
+  /* flat side rail with a hairline instead of the glossy gradient */
+  & #zen-library-side {
+    background: none !important;
+    box-shadow: none !important;
+    border-inline-end: 1px solid var(--wf-library-line);
+  }
+}
+
+:root[zen-right-side="true"] zen-library #zen-library-side {
+  border-inline-end: none;
+  border-inline-start: 1px solid var(--wf-library-line);
+}
+
+/* section tabs */
+.zen-library-tab::before {
+  border-radius: var(--na-tab-border-radius) !important;
+  corner-shape: var(--wf-shape-tab) !important;
+}
+
+.zen-library-tab[active]::before {
+  outline: 1px solid var(--wf-library-line);
+  outline-offset: -1px;
+}
+
+/* list rows (history, downloads, boosts, search) */
+.zen-library-row,
+.zen-library-boost-row,
+.zen-library-media-item,
+.zen-library-space-header::before {
+  border-radius: var(--na-tab-border-radius) !important;
+  corner-shape: var(--wf-shape-tab) !important;
+}
+
+.zen-library-media-opt-in {
+  border-radius: var(--na-user-border-radius) !important;
+  corner-shape: var(--wf-shape-panel) !important;
+}
+
+/* space cards */
+.zen-library-space {
+  border: 1px solid var(--wf-library-line);
+  transition-property: translate, opacity, scale, z-index, border-color !important;
+
+  &,
+  &::before {
+    border-radius: var(--na-user-border-radius) !important;
+    corner-shape: var(--wf-shape-panel) !important;
+  }
+
+  &:not([dragging])::before {
+    box-shadow: none !important;
+  }
+
+  /* the space you're in gets the same frame as the webview */
+  &[active] {
+    border-color: var(--na-color-border);
+  }
+}
+
+/* === SPACE CREATION FORM (sidebar) ===
+   Zen draws these as near-pills; use the tab radius so they match the
+   tab list right below them. */
+zen-workspace-creation form {
+  & .zen-workspace-creation-name-wrapper,
+  & .zen-workspace-creation-profile-wrapper,
+  & .zen-workspace-creation-edit-theme-button,
+  & .zen-workspace-creation-buttons button {
+    border-radius: var(--na-tab-border-radius) !important;
+    corner-shape: var(--wf-shape-tab) !important;
+  }
+
+  & .zen-workspace-creation-name-wrapper:focus-within {
+    outline: 1px solid var(--na-color-border);
+    outline-offset: -1px;
+  }
+}

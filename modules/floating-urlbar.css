@@ -342,7 +342,7 @@
   } */
 
   /* SLIM */
-  @media (-moz-pref("wireframe.urlbar.style","slim")){
+  @media (-moz-pref("wireframe.urlbar.style","slim")), (-moz-pref("wireframe.urlbar.style","")){
   /* move the navbar out from sidebar so url can have the same bahavior as other toolbar mode */
     [zen-compact-mode="true"] {
       #urlbar-container:has(#urlbar[open]) {
@@ -977,7 +977,7 @@
 /* single toolbar */
 #navigator-toolbox:has(#urlbar[zen-floating-urlbar="true"]) {
 
-  @media (-moz-pref("wireframe.urlbar.style","slim")){
+  @media (-moz-pref("wireframe.urlbar.style","slim")), (-moz-pref("wireframe.urlbar.style","")){
   /* move the navbar out from sidebar so url can have the same bahavior as other toolbar mode */
     [zen-compact-mode="true"] {
       #urlbar-container:has(#urlbar[open]) {
