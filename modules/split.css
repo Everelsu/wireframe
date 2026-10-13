@@ -72,3 +72,126 @@
     background: var(--na-color-border);
   }
 }
+
+/* --- the panes ---
+   Zen moves panes with a 90ms linear-ish snap; ease them instead (not while
+   the user drags a splitter, the panes must follow the pointer then). */
+@media (prefers-reduced-motion: no-preference) {
+  #tabbrowser-tabpanels[zen-split-view="true"]:not(.zen-split-view-no-transition):not([zen-split-resizing]) > [zen-split="true"] {
+    transition:
+      inset 0.34s var(--wf-ease, ease),
+      outline-color 0.25s var(--wf-ease, ease) !important;
+  }
+}
+
+/* the bar on top of a pane (move / unsplit): a tab hanging from the frame */
+.zen-view-splitter-header-container {
+  transition: opacity 0.18s var(--wf-ease, ease) !important;
+}
+
+.zen-view-splitter-header {
+  padding: 4px 10px 3px !important;
+  gap: 10px !important;
+  background: var(--na-color-bg) !important;
+  color: var(--toolbox-textcolor) !important;
+  border: 1px solid color-mix(in srgb, var(--na-color-border) 45%, transparent);
+  border-top: 0;
+  border-radius: 0 0 var(--na-tab-border-radius) var(--na-tab-border-radius) !important;
+  corner-shape: var(--wf-shape-tab);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.3) !important;
+  translate: 0 -6px;
+  transition: translate 0.28s var(--wf-ease, ease);
+
+  .browserSidebarContainer.deck-selected & {
+    border-color: var(--na-color-border);
+  }
+
+  & toolbarbutton {
+    color: inherit !important;
+    opacity: 0.65 !important;
+    transition: opacity 0.15s ease;
+
+    &:hover {
+      opacity: 1 !important;
+    }
+  }
+}
+
+:root:not([inDOMFullscreen="true"]) .browserSidebarContainer:hover .zen-view-splitter-header,
+.zen-view-splitter-header-container:hover .zen-view-splitter-header {
+  translate: 0 0;
+}
+
+/* the gap between panes lights up where it can be dragged */
+.zen-split-view-splitter {
+  --wf-split-line: transparent;
+  background: linear-gradient(to right, transparent calc(50% - 1px), var(--wf-split-line) calc(50% - 1px), var(--wf-split-line) calc(50% + 1px), transparent calc(50% + 1px)) !important;
+  transition: --wf-split-line 0.2s var(--wf-ease, ease);
+
+  &[orient="horizontal"] {
+    background: linear-gradient(to bottom, transparent calc(50% - 1px), var(--wf-split-line) calc(50% - 1px), var(--wf-split-line) calc(50% + 1px), transparent calc(50% + 1px)) !important;
+  }
+
+  &:hover,
+  #tabbrowser-tabpanels[zen-split-resizing] & {
+    --wf-split-line: color-mix(in srgb, var(--na-color-border) 70%, transparent);
+  }
+}
+
+/* --- drag a tab onto the page: where the new pane will open --- */
+#zen-split-view-fake-browser {
+  border: 2px dashed color-mix(in srgb, var(--na-color-border) 75%, transparent) !important;
+  background: color-mix(in srgb, var(--na-color-border) 7%, var(--zen-main-browser-background-toolbar, var(--na-color-bg))) !important;
+  border-radius: var(--na-user-border-radius) !important;
+  corner-shape: var(--wf-shape-panel) !important;
+  box-shadow: inset 0 0 40px color-mix(in srgb, var(--na-color-border) 10%, transparent) !important;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: wf-drop-breathe 1.4s ease-in-out infinite alternate;
+  }
+
+  /* Zen places the left/top preview with a negative margin from its static
+     position, which lands after the page (under it) here; pin it instead */
+  &[side="left"] {
+    left: 0 !important;
+    margin-left: 0 !important;
+  }
+
+  &[side="top"] {
+    top: 0 !important;
+    margin-top: 0 !important;
+  }
+}
+
+/* the drag image while it splits */
+#zen-split-view-drag-image {
+  background: var(--na-color-bg) !important;
+  border: 2px solid var(--na-color-border);
+  border-radius: var(--na-user-border-radius) !important;
+  corner-shape: var(--wf-shape-panel);
+
+  & label {
+    color: var(--toolbox-textcolor) !important;
+    font-weight: 500 !important;
+  }
+}
+
+/* --- drag a tab onto a tab in the sidebar: the half it will take --- */
+zen-split-fake-tab {
+  border: 1.5px dashed var(--na-color-border);
+  background: color-mix(in srgb, var(--na-color-border) 12%, transparent) !important;
+  border-radius: var(--na-tab-border-radius) !important;
+  corner-shape: var(--wf-shape-tab);
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: wf-fake-tab-in 0.28s var(--wf-ease, ease) both, wf-drop-breathe 1.4s ease-in-out 0.28s infinite alternate;
+  }
+}
+
+@keyframes wf-drop-breathe {
+  to { border-color: color-mix(in srgb, var(--na-color-border) 35%, transparent); }
+}
+
+@keyframes wf-fake-tab-in {
+  from { opacity: 0; scale: 0.6 1; }
+}

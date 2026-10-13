@@ -44,6 +44,13 @@
       }
     }
 
+    /* Zen pulls the page up by the bar's height while it's hovered, to
+       cancel the bar pushing it down. Floating, the bar pushes nothing, so
+       that pull would just drag the site up under the cursor. */
+    & #tabbrowser-tabpanels[has-toolbar-hovered] .browserContainer {
+      margin-top: 0 !important;
+    }
+
     /* no window ring either */
     & #browser::before {
       border: 0 !important;

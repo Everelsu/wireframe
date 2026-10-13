@@ -15,9 +15,7 @@
 #urlbar {
   color: var(--toolbox-textcolor) !important;
   --wf-urlbar-line: color-mix(in srgb, currentColor 14%, transparent);
-  --wf-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --wf-ease-spring: cubic-bezier(0.34, 1.32, 0.64, 1);
-  --wf-ease-exit: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .urlbar-background {
@@ -69,13 +67,6 @@
    (.urlbar-background) ends on the page frame's bottom line; below that a
    "foot" (#urlbar::after) carries it down to the window frame, so there is
    no seam between the panel and the window. */
-@property --wf-bt { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
-@property --wf-br { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
-@property --wf-bb { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
-@property --wf-bl { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
-@property --wf-rt { syntax: "<length>"; inherits: false; initial-value: 0px; }
-@property --wf-rb { syntax: "<length>"; inherits: false; initial-value: 0px; }
-@property --wf-bc { syntax: "<color>"; inherits: false; initial-value: transparent; }
 
 :root[zen-single-toolbar="true"] #urlbar {
   --wf-sidebar-w: var(--zen-sidebar-width, 0px);
@@ -91,21 +82,14 @@
   --wf-surf: var(--wf-win);
   --wf-surf-edge: var(--wf-win);
   --wf-foot: calc(var(--zen-element-separation, 8px) - var(--wf-ring));
-  /* docked bar, relative to the surface's bottom-left corner */
-  --wf-dock-x: calc(6px - var(--wf-urlbar-left));
-  --wf-dock-y: 6px;
 }
 
 :root[zen-single-toolbar="true"][zen-compact-mode="true"] #urlbar {
   --wf-sidebar-w: 0px;
-  /* the floating sidebar sits inset from the window edge */
-  --wf-dock-x: calc(36px - var(--wf-urlbar-left));
-  --wf-dock-y: 28px;
 }
 
 :root[zen-single-toolbar="true"][zen-right-side="true"] #urlbar {
   --wf-urlbar-cx: calc((100vw - var(--wf-sidebar-w)) / 2);
-  --wf-dock-x: calc(100vw - var(--wf-sidebar-w) + 6px - var(--wf-urlbar-left));
 }
 
 :root[zen-single-toolbar="true"] #urlbar[breakout-extend] {
@@ -233,226 +217,239 @@
 }
 
 /* ---------- motion ----------
-   Width, height, corners and frame color of the surface run as separate
-   single-curve animations (no multi-step keyframes, so no stalls between
-   stages); content uses transform/opacity only. wireframe.uc.js stores how
-   the bar was opened in [wf-origin] (dock | frame | line | center), so the
-   close always mirrors the open. Without the script the CSS falls back to
-   Zen's own attributes for opening. */
+   The surface's geometry lives in custom properties (--wf-bt/br/bb/bl,
+   corners --wf-rt/rb, frame color --wf-bc). wireframe.uc.js registers them
+   (@property in a user sheet is ignored), and the morph runs as
+   transitions between three states, because Gecko steps custom properties
+   discretely in @keyframes whose values use var():
+     [wf-enter=<origin>]    where it starts (held for one style flush)
+     open                   the rules above
+     [wf-closing=<origin>]  where it goes back to
+   Origins: dock (clicked in the sidebar), frame (Ctrl+L), line (Ctrl+T),
+   center (keyboard, compact). For "dock" the script measures the docked bar
+   and stores its offsets from the panel in --wf-dock-t/r/b/l (and the input
+   row's in --wf-in-dx/dy), so the panel grows out of and back into wherever
+   the bar really sits: bottom or top of the sidebar, either side, compact.
+   Content only uses transform/opacity/clip. */
 @media (prefers-reduced-motion: no-preference) {
-  :root[zen-single-toolbar="true"] #urlbar[breakout-extend]:not([wf-closing]) {
-    /* click: grows out of the docked bar */
+  :root[zen-single-toolbar="true"] #urlbar[breakout-extend] {
+    --wf-morph: cubic-bezier(0.32, 0.72, 0, 1);
+    --wf-glide: cubic-bezier(0.65, 0, 0.35, 1);
+
     & > .urlbar-background {
-      animation:
-        wf-in-dock-x 0.5s var(--wf-ease-out),
-        wf-in-dock-y 0.54s var(--wf-ease-out),
-        wf-in-round 0.36s var(--wf-ease-out),
-        wf-in-border 0.24s ease-out !important;
-
-      &::before, &::after { animation: wf-fade-in 0.22s ease-out 0.26s backwards !important; }
-    }
-    &::after { animation: wf-fade-in 0.3s ease-out 0.08s backwards !important; }
-    & > .urlbar-input-container { animation: wf-in-input-dock 0.5s var(--wf-ease-out) !important; }
-
-    /* keyboard (Ctrl+L): the page frame's bottom line swells up */
-    &:is([wf-origin="frame"], :not([wf-origin])[zen-floating-urlbar="true"]) {
-      & > .urlbar-background {
-        animation:
-          wf-in-frame-x 0.36s var(--wf-ease-out),
-          wf-in-frame-y 0.56s var(--wf-ease-out) 0.04s backwards,
-          wf-in-flat 0.4s var(--wf-ease-out) 0.04s backwards !important;
-        &::before, &::after { animation-delay: 0.1s !important; }
-      }
-      &::after { animation-delay: 0s !important; }
-      & > .urlbar-input-container { animation: wf-in-input-rise 0.42s var(--wf-ease-out) 0.08s backwards !important; }
+      transition:
+        --wf-bl 0.46s var(--wf-morph), --wf-br 0.46s var(--wf-morph),
+        --wf-bt 0.5s var(--wf-morph), --wf-bb 0.5s var(--wf-morph),
+        --wf-rt 0.4s var(--wf-morph), --wf-rb 0.4s var(--wf-morph),
+        --wf-bc 0.3s ease-out;
     }
 
-    /* Ctrl+T: a point on the frame line opens into a line, the line rises */
-    &:is([wf-origin="line"], :not([wf-origin])[zen-newtab]) {
+    /* the start state is applied without a transition */
+    &[wf-enter] > .urlbar-background { transition: none !important; }
+
+    /* no script: no measured start, just fade in */
+    &:not([wf-origin]) > .urlbar-background { animation: wf-fade-in 0.2s ease-out; }
+  }
+
+  /* --- the states the surface morphs from / to --- */
+  :root[zen-single-toolbar="true"] #urlbar[breakout-extend] {
+    &:is([wf-enter="dock"], [wf-closing="dock"]) > .urlbar-background {
+      --wf-bt: var(--wf-dock-t, calc(100% - var(--urlbar-height, 38px)));
+      --wf-br: var(--wf-dock-r, 0px);
+      --wf-bb: var(--wf-dock-b, 0px);
+      --wf-bl: var(--wf-dock-l, 0px);
+      --wf-rt: var(--na-tab-border-radius);
+      --wf-rb: var(--na-tab-border-radius);
+      --wf-bc: transparent;
+    }
+
+    /* the page frame's bottom line swells up into the panel */
+    &:is([wf-enter="frame"], [wf-enter="line"], [wf-closing="frame"], [wf-closing="line"]) > .urlbar-background {
+      --wf-bt: calc(100% - var(--wf-foot) - 2px);
+      --wf-rt: 2px;
+    }
+    &[wf-enter="frame"] > .urlbar-background { --wf-bl: -2%; --wf-br: -2%; }
+    &[wf-closing="frame"] > .urlbar-background { --wf-bl: 6%; --wf-br: 6%; }
+    /* Ctrl+T: a point on the line opens into the line first */
+    &:is([wf-enter="line"], [wf-closing="line"]) > .urlbar-background { --wf-bl: 50%; --wf-br: 50%; }
+
+    /* a pill at the bottom center */
+    &:is([wf-enter="center"], [wf-closing="center"]) > .urlbar-background {
+      --wf-bt: calc(100% - var(--wf-foot) - var(--urlbar-height, 38px));
+      --wf-bl: 34%;
+      --wf-br: 34%;
+      --wf-rt: calc(var(--urlbar-height, 38px) / 2);
+      --wf-rb: calc(var(--urlbar-height, 38px) / 2);
+    }
+  }
+
+  /* --- opening --- */
+  :root[zen-single-toolbar="true"] #urlbar[breakout-extend]:not([wf-closing]) {
+    &[wf-origin="dock"] {
+      & > .urlbar-background::before,
+      & > .urlbar-background::after { animation: wf-fade-in 0.22s ease-out 0.24s backwards !important; }
+      &::after { animation: wf-fade-in 0.3s ease-out 0.08s backwards !important; }
+      & > .urlbar-input-container { animation: wf-in-input-dock 0.46s var(--wf-morph) !important; }
+    }
+
+    &[wf-origin="frame"] {
       & > .urlbar-background {
-        animation:
-          wf-in-line-x 0.3s cubic-bezier(0.65, 0, 0.35, 1),
-          wf-in-frame-y 0.56s var(--wf-ease-out) 0.1s backwards,
-          wf-in-flat 0.4s var(--wf-ease-out) 0.1s backwards !important;
-        &::before, &::after { animation-delay: 0.2s !important; }
+        transition:
+          --wf-bl 0.38s var(--wf-morph), --wf-br 0.38s var(--wf-morph),
+          --wf-bt 0.52s var(--wf-morph) 0.04s, --wf-bb 0.52s var(--wf-morph) 0.04s,
+          --wf-rt 0.42s var(--wf-morph) 0.04s, --wf-rb 0.42s var(--wf-morph) 0.04s;
+        &::before, &::after { animation: wf-fade-in 0.22s ease-out 0.1s backwards !important; }
       }
       &::after { animation: wf-fade-in 0.3s ease-out backwards !important; }
-      & > .urlbar-input-container { animation: wf-in-input-rise 0.42s var(--wf-ease-out) 0.16s backwards !important; }
+      & > .urlbar-input-container { animation: wf-in-input-rise 0.42s var(--wf-morph) 0.06s backwards !important; }
     }
 
-    /* compact, keyboard: a pill at the bottom center, wide first */
+    &[wf-origin="line"] {
+      & > .urlbar-background {
+        transition:
+          --wf-bl 0.32s var(--wf-glide), --wf-br 0.32s var(--wf-glide),
+          --wf-bt 0.52s var(--wf-morph) 0.1s, --wf-bb 0.52s var(--wf-morph) 0.1s,
+          --wf-rt 0.42s var(--wf-morph) 0.1s, --wf-rb 0.42s var(--wf-morph) 0.1s;
+        &::before, &::after { animation: wf-fade-in 0.22s ease-out 0.2s backwards !important; }
+      }
+      &::after { animation: wf-fade-in 0.3s ease-out backwards !important; }
+      & > .urlbar-input-container { animation: wf-in-input-rise 0.42s var(--wf-morph) 0.14s backwards !important; }
+    }
+
     &[wf-origin="center"] {
       & > .urlbar-background {
-        animation:
-          wf-in-center-x 0.4s var(--wf-ease-out),
-          wf-in-center-y 0.56s var(--wf-ease-out) 0.06s backwards,
-          wf-fade-in 0.2s ease-out !important;
+        transition:
+          --wf-bl 0.42s var(--wf-morph), --wf-br 0.42s var(--wf-morph),
+          --wf-rt 0.42s var(--wf-morph), --wf-rb 0.42s var(--wf-morph),
+          --wf-bt 0.52s var(--wf-morph) 0.05s, --wf-bb 0.52s var(--wf-morph) 0.05s;
+        animation: wf-fade-in 0.18s ease-out !important;
       }
-      & > .urlbar-input-container { animation: wf-in-input-rise 0.42s var(--wf-ease-out) 0.08s backwards !important; }
+      & > .urlbar-input-container { animation: wf-in-input-rise 0.4s var(--wf-morph) 0.06s backwards !important; }
     }
 
-    & .urlbarView { animation: wf-in-results 0.38s var(--wf-ease-out) calc(var(--wf-rows-at) - 0.02s) backwards !important; }
+    & .urlbarView { animation: wf-in-results 0.36s var(--wf-morph) calc(var(--wf-rows-at) - 0.02s) backwards !important; }
 
     /* rows arrive one after another, once the surface has grown past them */
-    --wf-rows-at: 0.18s;
-    &:is([wf-origin="frame"], [wf-origin="center"]) { --wf-rows-at: 0.22s; }
-    &[wf-origin="line"] { --wf-rows-at: 0.3s; }
+    --wf-rows-at: 0.16s;
+    &:is([wf-origin="frame"], [wf-origin="center"]) { --wf-rows-at: 0.2s; }
+    &[wf-origin="line"] { --wf-rows-at: 0.28s; }
 
     & .urlbarView-row {
-      animation: wf-in-row 0.34s var(--wf-ease-out) backwards;
+      animation: wf-in-row 0.34s var(--wf-morph) backwards;
       animation-delay: var(--wf-rows-at);
-      &:nth-child(2) { animation-delay: calc(var(--wf-rows-at) + 0.03s); }
-      &:nth-child(3) { animation-delay: calc(var(--wf-rows-at) + 0.06s); }
-      &:nth-child(4) { animation-delay: calc(var(--wf-rows-at) + 0.09s); }
-      &:nth-child(5) { animation-delay: calc(var(--wf-rows-at) + 0.12s); }
-      &:nth-child(n + 6) { animation-delay: calc(var(--wf-rows-at) + 0.15s); }
+      &:nth-child(2) { animation-delay: calc(var(--wf-rows-at) + 0.025s); }
+      &:nth-child(3) { animation-delay: calc(var(--wf-rows-at) + 0.05s); }
+      &:nth-child(4) { animation-delay: calc(var(--wf-rows-at) + 0.075s); }
+      &:nth-child(5) { animation-delay: calc(var(--wf-rows-at) + 0.1s); }
+      &:nth-child(n + 6) { animation-delay: calc(var(--wf-rows-at) + 0.12s); }
     }
   }
 
   /* compact click: same path from the floating sidebar, with a little spring */
   :root[zen-single-toolbar="true"][zen-compact-mode="true"] #urlbar[breakout-extend][wf-origin="dock"]:not([wf-closing]) > .urlbar-background {
-    animation:
-      wf-in-dock-x 0.56s var(--wf-ease-spring),
-      wf-in-dock-y 0.6s var(--wf-ease-spring),
-      wf-in-round 0.36s var(--wf-ease-out),
-      wf-in-border 0.24s ease-out !important;
+    transition:
+      --wf-bl 0.54s var(--wf-ease-spring), --wf-br 0.54s var(--wf-ease-spring),
+      --wf-bt 0.58s var(--wf-ease-spring), --wf-bb 0.58s var(--wf-ease-spring),
+      --wf-rt 0.4s var(--wf-morph), --wf-rb 0.4s var(--wf-morph),
+      --wf-bc 0.3s ease-out;
   }
 
-  /* closing: the mirror of the opening, on the live panel */
+  /* --- closing: the mirror of the opening, on the live panel ---
+     The results leave first, the surface then folds back while the input
+     row rides along, and only the last few frames fade, right where the
+     docked bar takes over. */
   :root[zen-single-toolbar="true"] #urlbar[breakout-extend][wf-closing] {
     pointer-events: none !important;
 
-    & .urlbarView { animation: wf-out-fade 0.14s ease-out both !important; }
+    & .urlbarView { animation: wf-out-results 0.1s ease-out both !important; }
     & > .urlbar-background::before,
     & > .urlbar-background::after { animation: wf-out-fade 0.12s ease-out both !important; }
-    &::after { animation: wf-out-fade 0.24s ease-in 0.06s both !important; }
+    &::after { animation: wf-out-fade 0.22s ease-in 0.04s both !important; }
 
     &[wf-closing="dock"] {
       & > .urlbar-background {
-        animation:
-          wf-out-dock-y 0.3s var(--wf-ease-exit) both,
-          wf-out-dock-x 0.32s var(--wf-ease-exit) both,
-          wf-out-round 0.26s var(--wf-ease-exit) both,
-          wf-out-border 0.2s ease-in 0.12s both,
-          wf-out-fade 0.14s ease-in 0.2s both !important;
+        transition:
+          --wf-bl 0.34s var(--wf-morph), --wf-br 0.34s var(--wf-morph),
+          --wf-bt 0.32s var(--wf-morph), --wf-bb 0.32s var(--wf-morph),
+          --wf-rt 0.28s var(--wf-morph), --wf-rb 0.28s var(--wf-morph),
+          --wf-bc 0.2s ease-in 0.1s;
+        animation: wf-out-fade 0.1s ease-in 0.24s both !important;
       }
-      & > .urlbar-input-container { animation: wf-out-input-dock 0.32s var(--wf-ease-exit) both !important; }
+      & > .urlbar-input-container { animation: wf-out-input-dock 0.34s var(--wf-morph) both !important; }
     }
 
     &[wf-closing="frame"] {
       & > .urlbar-background {
-        animation:
-          wf-out-frame-y 0.3s var(--wf-ease-exit) both,
-          wf-out-flat 0.24s var(--wf-ease-exit) 0.08s both,
-          wf-out-frame-x 0.2s ease-in 0.14s both,
-          wf-out-fade 0.1s ease-in 0.24s both !important;
+        transition:
+          --wf-bt 0.28s var(--wf-morph), --wf-bb 0.28s var(--wf-morph),
+          --wf-rt 0.22s var(--wf-morph) 0.06s, --wf-rb 0.22s var(--wf-morph) 0.06s,
+          --wf-bl 0.2s ease-in 0.12s, --wf-br 0.2s ease-in 0.12s;
+        animation: wf-out-fade 0.1s ease-in 0.22s both !important;
       }
-      & > .urlbar-input-container { animation: wf-out-input-sink 0.22s var(--wf-ease-exit) both !important; }
+      & > .urlbar-input-container { animation: wf-out-input-sink 0.22s ease-in both !important; }
     }
 
     &[wf-closing="line"] {
       & > .urlbar-background {
-        animation:
-          wf-out-frame-y 0.26s var(--wf-ease-exit) both,
-          wf-out-flat 0.2s var(--wf-ease-exit) 0.06s both,
-          wf-out-line-x 0.2s cubic-bezier(0.65, 0, 0.35, 1) 0.2s both,
-          wf-out-fade 0.08s ease-in 0.34s both !important;
+        transition:
+          --wf-bt 0.24s var(--wf-morph), --wf-bb 0.24s var(--wf-morph),
+          --wf-rt 0.2s var(--wf-morph) 0.04s, --wf-rb 0.2s var(--wf-morph) 0.04s,
+          --wf-bl 0.18s var(--wf-glide) 0.16s, --wf-br 0.18s var(--wf-glide) 0.16s;
+        animation: wf-out-fade 0.08s ease-in 0.28s both !important;
       }
-      & > .urlbar-input-container { animation: wf-out-input-sink 0.2s var(--wf-ease-exit) both !important; }
+      & > .urlbar-input-container { animation: wf-out-input-sink 0.2s ease-in both !important; }
     }
 
     &[wf-closing="center"] {
       & > .urlbar-background {
-        animation:
-          wf-out-center-y 0.26s var(--wf-ease-exit) both,
-          wf-out-center-x 0.22s var(--wf-ease-exit) 0.1s both,
-          wf-out-fade 0.12s ease-in 0.2s both !important;
+        transition:
+          --wf-bt 0.26s var(--wf-morph), --wf-bb 0.26s var(--wf-morph),
+          --wf-bl 0.24s var(--wf-morph) 0.06s, --wf-br 0.24s var(--wf-morph) 0.06s,
+          --wf-rt 0.24s var(--wf-morph) 0.06s, --wf-rb 0.24s var(--wf-morph) 0.06s;
+        animation: wf-out-fade 0.12s ease-in 0.18s both !important;
       }
-      & > .urlbar-input-container { animation: wf-out-input-sink 0.22s var(--wf-ease-exit) both !important; }
+      & > .urlbar-input-container { animation: wf-out-input-sink 0.2s ease-in both !important; }
+    }
+  }
+
+  /* URL bar kept at the top: the keyboard origins drop down from the
+     input row instead of rising from the page frame's bottom line */
+  @media (-moz-pref("wireframe.urlbar.position.top")) {
+    :root[zen-single-toolbar="true"] #urlbar[breakout-extend] {
+      &:is([wf-enter="frame"], [wf-enter="line"], [wf-enter="center"],
+           [wf-closing="frame"], [wf-closing="line"], [wf-closing="center"]) > .urlbar-background {
+        --wf-bt: 0px;
+        --wf-bb: calc(100% - var(--urlbar-height, 38px));
+        --wf-bl: 18%;
+        --wf-br: 18%;
+        --wf-rt: calc(var(--urlbar-height, 38px) / 2);
+        --wf-rb: calc(var(--urlbar-height, 38px) / 2);
+      }
+
+      & > .urlbar-input-container { --wf-rise: -10px; }
     }
   }
 }
 
-/* --- open (from-states) --- */
-@keyframes wf-in-dock-x {
-  from {
-    --wf-bl: var(--wf-dock-x);
-    --wf-br: calc(100% - var(--wf-dock-x) - var(--urlbar-width, 174px));
-  }
-}
-@keyframes wf-in-dock-y {
-  from {
-    --wf-bt: calc(100% - var(--urlbar-height, 38px) - var(--wf-dock-y) - var(--wf-foot));
-    --wf-bb: calc(var(--wf-dock-y) + var(--wf-foot));
-  }
-}
-@keyframes wf-in-round {
-  from {
-    --wf-rt: var(--na-tab-border-radius);
-    --wf-rb: var(--na-tab-border-radius);
-  }
-}
-@keyframes wf-in-border { from { --wf-bc: transparent; } }
-@keyframes wf-in-frame-x { from { --wf-bl: -2%; --wf-br: -2%; } }
-@keyframes wf-in-frame-y { from { --wf-bt: calc(100% - var(--wf-foot) - 2px); } }
-@keyframes wf-in-flat { from { --wf-rt: 2px; } }
-@keyframes wf-in-line-x { from { --wf-bl: 50%; --wf-br: 50%; } }
-@keyframes wf-in-center-x {
-  from {
-    --wf-bl: 36%;
-    --wf-br: 36%;
-    --wf-rt: calc(var(--urlbar-height, 38px) / 2);
-    --wf-rb: calc(var(--urlbar-height, 38px) / 2);
-  }
-}
-@keyframes wf-in-center-y { from { --wf-bt: calc(100% - var(--wf-foot) - var(--urlbar-height, 38px)); } }
-
 @keyframes wf-in-input-dock {
-  from { transform: translate(var(--wf-dock-x), calc(-1 * var(--wf-dock-y))); }
+  from {
+    transform: translate(var(--wf-in-dx, 0px), var(--wf-in-dy, 0px));
+    clip-path: inset(0 calc(100% - var(--wf-in-w, 100%)) 0 0);
+  }
 }
-@keyframes wf-in-input-rise { from { transform: translateY(10px); opacity: 0; } }
+@keyframes wf-in-input-rise { from { transform: translateY(var(--wf-rise, 10px)); opacity: 0; } }
 @keyframes wf-in-results { from { opacity: 0; } }
-@keyframes wf-in-row { from { opacity: 0; transform: translateY(8px); } }
+@keyframes wf-in-row { from { opacity: 0; transform: translateY(6px); } }
 @keyframes wf-fade-in { from { opacity: 0; } }
 
-/* --- close (to-states) --- */
-@keyframes wf-out-dock-x {
-  to {
-    --wf-bl: var(--wf-dock-x);
-    --wf-br: calc(100% - var(--wf-dock-x) - var(--urlbar-width, 174px));
-  }
-}
-@keyframes wf-out-dock-y {
-  to {
-    --wf-bt: calc(100% - var(--urlbar-height, 38px) - var(--wf-dock-y) - var(--wf-foot));
-    --wf-bb: calc(var(--wf-dock-y) + var(--wf-foot));
-  }
-}
-@keyframes wf-out-round {
-  to {
-    --wf-rt: var(--na-tab-border-radius);
-    --wf-rb: var(--na-tab-border-radius);
-  }
-}
-@keyframes wf-out-border { to { --wf-bc: transparent; } }
-@keyframes wf-out-frame-y { to { --wf-bt: calc(100% - var(--wf-foot) - 2px); } }
-@keyframes wf-out-frame-x { to { --wf-bl: 6%; --wf-br: 6%; } }
-@keyframes wf-out-flat { to { --wf-rt: 2px; } }
-@keyframes wf-out-line-x { to { --wf-bl: 50%; --wf-br: 50%; } }
-@keyframes wf-out-center-x {
-  to {
-    --wf-bl: 36%;
-    --wf-br: 36%;
-    --wf-rt: calc(var(--urlbar-height, 38px) / 2);
-    --wf-rb: calc(var(--urlbar-height, 38px) / 2);
-  }
-}
-@keyframes wf-out-center-y { to { --wf-bt: calc(100% - var(--wf-foot) - var(--urlbar-height, 38px)); } }
-
 @keyframes wf-out-input-dock {
-  to { transform: translate(var(--wf-dock-x), calc(-1 * var(--wf-dock-y))); opacity: 0; }
+  to {
+    transform: translate(var(--wf-in-dx, 0px), var(--wf-in-dy, 0px));
+    clip-path: inset(0 calc(100% - var(--wf-in-w, 100%)) 0 0);
+  }
 }
-@keyframes wf-out-input-sink { to { transform: translateY(10px); opacity: 0; } }
+@keyframes wf-out-input-sink { to { transform: translateY(var(--wf-rise, 10px)); opacity: 0; } }
+@keyframes wf-out-results { to { opacity: 0; transform: translateY(6px); } }
 @keyframes wf-out-fade { to { opacity: 0; } }
 
 /* the page steps back while the bar is open: an overlay whose opacity is

@@ -1,7 +1,7 @@
 /* === PANEL/POPUP === */
 
 panelview {
-  border-radius: var(na-window-border-radius) !important;
+  border-radius: var(--na-window-border-radius) !important;
   /*! border: 1.5px solid var(--na-color-border) !important; */
   background-color: var(--panel-background) !important;
   color: var(--zen-primary-text) !important;

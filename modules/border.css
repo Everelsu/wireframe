@@ -220,14 +220,14 @@ body > hbox {
 } */
 
 /* content window bottom margin on SINGLE-TOOLBAR mode */
-/* @media (-moz-bool-pref: "zen.view.use-single-toolbar") {
+/* @media (-moz-pref("zen.view.use-single-toolbar")) {
   :root[zen-sidebar-expanded="true"]:not([zen-compact-mode="true"]):not([inDOMFullscreen="true"]) #zen-tabbox-wrapper {
     margin-bottom: var(--na-window-margin) !important;
   }
 } */
 
 /* @media (-moz-pref("zen.view.use-single-toolbar")) {
-  @media not (-moz-bool-pref: "wireframe.urlbar.position.top"){
+  @media not (-moz-pref("wireframe.urlbar.position.top")){
     :root[zen-sidebar-expanded="true"]:not([zen-compact-mode="true"]):not([inDOMFullscreen="true"]) #zen-tabbox-wrapper {
       margin-bottom: calc( var(--na-window-margin) - 10px ) !important;
     }
@@ -261,13 +261,18 @@ body > hbox {
 
 /* WEBVIEW BORDER RADIUS */
 
-#tabbrowser-tabbox,
-#tabbrowser-tabbox > * {
+/* Not the tabbox's own padding, nor the drop preview's margin: Zen animates
+   those to make room when a tab is dragged onto the page to split it. And
+   not the split view's panels: their negative top margin cancels the gap
+   each pane keeps above itself, so panes line up with a single page. */
+#tabbrowser-tabbox > :not(#zen-split-view-fake-browser, #tabbrowser-tabpanels[zen-split-view="true"]) {
     margin: 0 !important;
     padding: 0 !important;
+}
+
+#tabbrowser-tabbox,
+#tabbrowser-tabbox > * {
     box-sizing: border-box !important;
-    
-    
 }
 
 :root[zen-right-side="true"]:not([zen-compact-mode="true"]):not(
@@ -597,33 +602,70 @@ body > hbox {
     }
 }
 
-/* ====== PREVIOUS/NEXT ANIMATION ====== */
+/* ====== TRACKPAD BACK / FORWARD ======
+   Firefox shows an arrow that follows the two-finger swipe
+   (#historySwipeAnimation*Arrow: [collapsed] while hidden, its svg gets
+   .will-navigate once letting go would navigate). The page leans the same
+   way a little while the swipe is undecided, further once it's committed,
+   and the arrow is drawn in the theme's own colors. */
+#historySwipeAnimationPreviousArrow,
+#historySwipeAnimationNextArrow {
+  --swipe-nav-icon-primary-color: var(--na-color-border) !important;
+  --swipe-nav-icon-accent-color: var(--zen-main-browser-background-toolbar, var(--na-color-bg)) !important;
 
-/* Always animate back and forth */
-browser {
-  @media (-moz-pref("wireframe.trackpad.animation")) {
-    transition: transform 0.33s ease, scale 0.33s ease, border-radius 0.33s ease !important;
+  & > svg {
+    filter: drop-shadow(0 6px 14px rgb(0 0 0 / 0.35));
+    transition: scale 0.32s var(--wf-ease-spring, cubic-bezier(0.34, 1.32, 0.64, 1));
+  }
+
+  & > svg.will-navigate {
+    scale: 1.12;
   }
 }
 
-/* Previous animation */
-.browserStack:has(
-    #historySwipeAnimationPreviousArrow:not([style="translate: none;"])
-) browser {
-  @media (-moz-pref("wireframe.trackpad.animation")) {
-    scale: 0.95 !important;
-    transform: translateX(3%) !important;
-    border-radius: var(--na-user-border-radius) !important;
-  }
+/* quicker, softer color swap than Firefox's 1s fade */
+:is(#historySwipeAnimationPreviousArrow, #historySwipeAnimationNextArrow) :is(.swipe-nav-icon-circle, .swipe-nav-icon-arrow) {
+  stroke-width: 1.5px;
+  transition: fill 0.22s var(--wf-ease, ease), stroke 0.22s var(--wf-ease, ease) !important;
 }
 
-/* Next animation */
-.browserStack:has(
-    #historySwipeAnimationNextArrow:not([style="translate: none;"])
-) browser {
-  @media (-moz-pref("wireframe.trackpad.animation")) {
-    scale: 0.95 !important;
-    transform: translateX(-3%) !important;
-    border-radius: var(--na-user-border-radius) !important;
+:is(#historySwipeAnimationPreviousArrow, #historySwipeAnimationNextArrow) .swipe-nav-icon-circle-outline {
+  transition: opacity 0.3s var(--wf-ease, ease) !important;
+}
+
+@media (-moz-pref("wireframe.trackpad.animation")) {
+  @media (prefers-reduced-motion: no-preference) {
+    .browserStack > browser {
+      transition: translate 0.42s var(--wf-ease, ease), scale 0.42s var(--wf-ease, ease), border-radius 0.42s var(--wf-ease, ease);
+    }
+  }
+
+  .browserStack:has(> #historySwipeAnimationContainer > :is(#historySwipeAnimationPreviousArrow, #historySwipeAnimationNextArrow):not([collapsed="true"])) > browser {
+    --wf-swipe-scale: 0.985;
+    translate: var(--wf-swipe-x) 0;
+    scale: var(--wf-swipe-scale);
+    border-radius: var(--na-user-border-radius);
+    corner-shape: var(--wf-shape-panel);
+  }
+
+  .browserStack:has(> #historySwipeAnimationContainer > #historySwipeAnimationPreviousArrow:not([collapsed="true"])) > browser {
+    --wf-swipe-x: 14px;
+  }
+
+  .browserStack:has(> #historySwipeAnimationContainer > #historySwipeAnimationNextArrow:not([collapsed="true"])) > browser {
+    --wf-swipe-x: -14px;
+  }
+
+  /* committed: letting go will navigate */
+  .browserStack:has(> #historySwipeAnimationContainer > :is(#historySwipeAnimationPreviousArrow, #historySwipeAnimationNextArrow):not([collapsed="true"]) > svg.will-navigate) > browser {
+    --wf-swipe-scale: 0.96;
+  }
+
+  .browserStack:has(> #historySwipeAnimationContainer > #historySwipeAnimationPreviousArrow:not([collapsed="true"]) > svg.will-navigate) > browser {
+    --wf-swipe-x: 44px;
+  }
+
+  .browserStack:has(> #historySwipeAnimationContainer > #historySwipeAnimationNextArrow:not([collapsed="true"]) > svg.will-navigate) > browser {
+    --wf-swipe-x: -44px;
   }
 }

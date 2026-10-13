@@ -167,7 +167,15 @@
     "processAs": "root",
     "label": "Pattern opacity (0-1)",
     "defaultValue": "0.4",
-    "placeholder": "0.4"
+    "placeholder": "0.4",
+    "conditions": [
+      {
+        "not": {
+          "property": "wireframe.browser.pattern",
+          "value": "none"
+        }
+      }
+    ]
   },
   {
     "type": "string",
@@ -175,7 +183,15 @@
     "processAs": "root",
     "label": "Pattern brightness (0-1)",
     "defaultValue": "0.7",
-    "placeholder": "0.7"
+    "placeholder": "0.7",
+    "conditions": [
+      {
+        "not": {
+          "property": "wireframe.browser.pattern",
+          "value": "none"
+        }
+      }
+    ]
   },
   {
     "type": "text",
@@ -294,7 +310,15 @@
     "defaultValue": "150px",
     "processAs": "root",
     "label": "Empty tab logo size",
-    "placeholder": "150px"
+    "placeholder": "150px",
+    "conditions": [
+      {
+        "not": {
+          "property": "wireframe.blank.logo",
+          "value": "none"
+        }
+      }
+    ]
   },
   {
     "type": "string",
@@ -302,7 +326,15 @@
     "defaultValue": "0.75",
     "processAs": "root",
     "label": "Empty tab logo opacity (0-1)",
-    "placeholder": "0.75"
+    "placeholder": "0.75",
+    "conditions": [
+      {
+        "not": {
+          "property": "wireframe.blank.logo",
+          "value": "none"
+        }
+      }
+    ]
   },
   {
     "type": "text",
@@ -339,14 +371,30 @@
     "property": "wireframe.macos.controls.focus",
     "label": "macOS: grey controls until hovered",
     "value": "boolean",
-    "defaultValue": true
+    "defaultValue": true,
+    "conditions": [
+      {
+        "if": {
+          "property": "wireframe.controls.style",
+          "value": "macos"
+        }
+      }
+    ]
   },
   {
     "type": "checkbox",
     "property": "wireframe.controls.reverse",
     "label": "macOS: reverse button order",
     "value": "boolean",
-    "defaultValue": false
+    "defaultValue": false,
+    "conditions": [
+      {
+        "if": {
+          "property": "wireframe.controls.style",
+          "value": "macos"
+        }
+      }
+    ]
   },
   {
     "type": "dropdown",
@@ -367,6 +415,14 @@
         "value": 2,
         "label": "Circle"
       }
+    ],
+    "conditions": [
+      {
+        "if": {
+          "property": "wireframe.controls.style",
+          "value": "macos"
+        }
+      }
     ]
   },
   {
@@ -375,7 +431,15 @@
     "label": "macOS: place controls on the left (restart)",
     "value": "boolean",
     "defaultValue": false,
-    "restart": true
+    "restart": true,
+    "conditions": [
+      {
+        "if": {
+          "property": "wireframe.controls.style",
+          "value": "macos"
+        }
+      }
+    ]
   },
   {
     "type": "dropdown",
@@ -430,6 +494,20 @@
         "value": "accent",
         "label": "System accent"
       }
+    ],
+    "conditions": [
+      {
+        "if": {
+          "property": "wireframe.window.border",
+          "value": "wireframe"
+        }
+      },
+      {
+        "if": {
+          "property": "wireframe.webview.border",
+          "value": "wireframe"
+        }
+      }
     ]
   },
   {
@@ -444,7 +522,15 @@
     "property": "wireframe.nogaps.border.enabled",
     "label": "No gaps: show divider line",
     "value": "boolean",
-    "defaultValue": false
+    "defaultValue": false,
+    "conditions": [
+      {
+        "if": {
+          "property": "wireframe.nogaps.enabled",
+          "value": true
+        }
+      }
+    ]
   },
   {
     "type": "text",
@@ -910,7 +996,15 @@
     "property": "wireframe.no-gap.compact-mode",
     "value": "boolean",
     "defaultValue": false,
-    "label": "Remove top gap"
+    "label": "Remove top gap",
+    "conditions": [
+      {
+        "if": {
+          "property": "wireframe.compact.framed",
+          "value": true
+        }
+      }
+    ]
   },
   {
     "type": "checkbox",
@@ -1043,7 +1137,15 @@
     "label": "URL bar at the top of the sidebar",
     "defaultValue": false,
     "type": "checkbox",
-    "value": "boolean"
+    "value": "boolean",
+    "conditions": [
+      {
+        "if": {
+          "property": "zen.view.use-single-toolbar",
+          "value": true
+        }
+      }
+    ]
   },
   {
     "type": "checkbox",
@@ -1102,6 +1204,10 @@
       {
         "value": "Film Dissolve",
         "label": "Film Dissolve"
+      },
+      {
+        "label": "None",
+        "value": "none"
       }
     ]
   },
@@ -1175,7 +1281,15 @@
     "property": "wireframe.pip.rounded",
     "label": "PiP: rounded window",
     "value": "boolean",
-    "defaultValue": false
+    "defaultValue": false,
+    "conditions": [
+      {
+        "if": {
+          "property": "wireframe.pip.disabled",
+          "value": false
+        }
+      }
+    ]
   },
   {
     "type": "dropdown",
@@ -1204,6 +1318,14 @@
         "value": 10,
         "label": "10px"
       }
+    ],
+    "conditions": [
+      {
+        "if": {
+          "property": "wireframe.pip.disabled",
+          "value": false
+        }
+      }
     ]
   },
   {
@@ -1211,7 +1333,15 @@
     "property": "wireframe.pip.blur",
     "label": "PiP: blurred controls",
     "value": "boolean",
-    "defaultValue": false
+    "defaultValue": false,
+    "conditions": [
+      {
+        "if": {
+          "property": "wireframe.pip.disabled",
+          "value": false
+        }
+      }
+    ]
   },
   {
     "type": "text",

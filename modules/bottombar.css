@@ -12,14 +12,14 @@
 
 @media not (-moz-pref("zen.view.use-single-toolbar")) {
   /* URL bar position preference - TOP */
-@media (-moz-bool-pref: "wireframe.urlbar.position.top") {
+@media (-moz-pref("wireframe.urlbar.position.top")) {
   #zen-appcontent-wrapper {
     flex-direction: column;
   }
 }
 
 /* URL bar position preference - BOTTOM (default) */
-@media not (-moz-bool-pref: "wireframe.urlbar.position.top") {
+@media not (-moz-pref("wireframe.urlbar.position.top")) {
     #zen-appcontent-wrapper {
       flex-direction: column-reverse;
     }
@@ -48,13 +48,13 @@
   margin-inline: 0px !important;
 /*   padding-inline: 10px !important; */
   box-sizing: border-box !important;
-  transition: padding-inline 0.3s normal;
+  transition: padding-inline 0.3s var(--wf-ease, ease);
   order: 1 !important;
 }
 
 #nav-bar-customization-target {
   padding-inline: 10px !important;
-  transition: padding-inline 0.3s normal !important;
+  transition: padding-inline 0.3s var(--wf-ease, ease) !important;
 }
 
 :root[zen-single-toolbar="true"] #nav-bar-customization-target {
@@ -167,19 +167,6 @@
   animation: slideUpAdressBar var(--na-anim-duration) ease;
 }
 
-/*   #zen-appcontent-navbar-wrapper{
-    display: none !important;
-  } */
-}
-
-
-.tab-stack {
-  box-shadow: none !important;
-  box-sizing: none !important;
-  padding: 0px !important;
-  margin: 0px !important;
-  border: 0px !important;
-}
 
 /* urlbar action button */
 .urlbar-page-action,

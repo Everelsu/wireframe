@@ -47,7 +47,7 @@
 }
 
 /* hide elements */
-@media (-moz-bool-pref: "wireframe.player.minimal"){
+@media (-moz-pref("wireframe.player.minimal")){
   #zen-media-pip-button,
   #zen-media-mute-button,
   #zen-media-mute-mic-button,
@@ -72,7 +72,7 @@
   }
 }
 
-@media (-moz-bool-pref: "wireframe.player.flip"){
+@media (-moz-pref("wireframe.player.flip")){
   /* Always show title and progress */
   #zen-media-info-vbox,
   #zen-media-controls-toolbar .show-on-hover {
@@ -80,7 +80,7 @@
       opacity: 1 !important;
       transform: translateY(0) !important;
       pointer-events: none; /* don't block clicks */
-      transition: max-height 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+      transition: max-height 0.28s var(--wf-ease, ease), opacity 0.2s var(--wf-ease, ease), transform 0.28s var(--wf-ease, ease);
   }
 
   /* Hide controls by default */
@@ -90,13 +90,13 @@
       opacity: 0 !important;
       overflow: hidden !important;
       pointer-events: none !important;
-      transition: max-height 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+      transition: max-height 0.28s var(--wf-ease, ease), opacity 0.2s var(--wf-ease, ease), transform 0.28s var(--wf-ease, ease);
   }
   
   #zen-media-close-button{
     visibility: collapse !important;
     opacity: 0 !important;
-    transition: max-height 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+    transition: max-height 0.28s var(--wf-ease, ease), opacity 0.2s var(--wf-ease, ease), transform 0.28s var(--wf-ease, ease);
   }
   
   #zen-media-controls-toolbar:hover #zen-media-close-button{

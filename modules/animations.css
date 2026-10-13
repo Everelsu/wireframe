@@ -155,127 +155,47 @@
 }
 
 
-/* === TAB SWITCHING ANIMATIONS === */
-
-@media (-moz-pref("wireframe.tab-switch.animation","Vertical Veil")){
-  #browser #tabbrowser-tabpanels:not([zen-split-view="true"]) > .browserSidebarContainer {
-    opacity: 0 !important;
-    mask-image: linear-gradient(to bottom, transparent 0%, black 60%);
-    transform: translateY(12px) !important;
-    transition: none !important;
+/* === TAB SWITCHING ANIMATIONS ===
+   The page that comes in eases from a pose to rest; nothing is held on the
+   pages afterwards (a held opacity/transform used to fight Glance, which
+   fades and scales the page behind it). Split view and Glance move their
+   panes themselves, so they're left alone. */
+@media (prefers-reduced-motion: no-preference) {
+  @media not (-moz-pref("wireframe.tab-switch.animation", "none")) {
+    #tabbrowser-tabpanels:not([zen-split-view="true"]) > .browserSidebarContainer.deck-selected:not(.zen-glance-overlay, .zen-glance-background) {
+      animation: wf-tab-in var(--wf-tab-dur, 0.3s) var(--wf-tab-ease, var(--wf-ease, ease));
+    }
   }
 
-  #browser #tabbrowser-tabpanels:not([zen-split-view="true"]) > .browserSidebarContainer.deck-selected {
-    opacity: 1 !important;
-    mask-image: none;
-    transform: translateY(0) !important;
-    transition: opacity .25s ease-out,
-                transform .22s ease-out,
-                mask-image .22s ease-out !important;
+  @media (-moz-pref("wireframe.tab-switch.animation", "Vertical Veil")) {
+    :root { --wf-tab-y: 12px; --wf-tab-dur: 0.32s; }
+  }
+  @media (-moz-pref("wireframe.tab-switch.animation", "Clean Sever")) {
+    :root { --wf-tab-x: 32px; --wf-tab-scale: 1.04; --wf-tab-filter: contrast(140%) saturate(0%); --wf-tab-dur: 0.22s; --wf-tab-ease: cubic-bezier(0.7, 0, 0.3, 1); }
+  }
+  @media (-moz-pref("wireframe.tab-switch.animation", "Blurry Dreams")) {
+    :root { --wf-tab-x: -10px; --wf-tab-scale: 0.98; --wf-tab-filter: blur(10px) saturate(0.8); --wf-tab-dur: 0.42s; }
+  }
+  @media (-moz-pref("wireframe.tab-switch.animation", "Prism Shatter")) {
+    :root { --wf-tab-y: -6px; --wf-tab-scale: 1.07; --wf-tab-filter: brightness(140%) saturate(1.3); --wf-tab-dur: 0.28s; }
+  }
+  @media (-moz-pref("wireframe.tab-switch.animation", "Hard Cut")) {
+    :root { --wf-tab-y: -4px; --wf-tab-scale: 0.98; --wf-tab-filter: brightness(60%) contrast(200%); --wf-tab-dur: 0.12s; --wf-tab-ease: linear; }
+  }
+  @media (-moz-pref("wireframe.tab-switch.animation", "Monolith Slide")) {
+    :root { --wf-tab-x: -20px; --wf-tab-scale: 1.02; --wf-tab-filter: grayscale(100%) contrast(140%); --wf-tab-dur: 0.28s; }
+  }
+  @media (-moz-pref("wireframe.tab-switch.animation", "Film Dissolve")) {
+    :root { --wf-tab-from: 0.6; --wf-tab-filter: blur(2px) contrast(0.8); --wf-tab-dur: 0.28s; --wf-tab-ease: ease; }
   }
 }
 
-@media (-moz-pref("wireframe.tab-switch.animation","Clean Sever")){
-  #browser #tabbrowser-tabpanels:not([zen-split-view="true"]) > .browserSidebarContainer {
-    opacity: 0;
-    transform: translateX(32px) scale(1.04);
-    filter: contrast(140%) saturate(0%);
-    transition: none !important;
-  }
-
-  #browser #tabbrowser-tabpanels:not([zen-split-view="true"]) > .browserSidebarContainer.deck-selected {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-    filter: none;
-    transition:
-      opacity 0.18s ease-out,
-      transform 0.18s cubic-bezier(.7,0,.3,1),
-      filter 0.18s ease-out !important;
-  }
-
-}
-
-@media(-moz-pref("wireframe.tab-switch.animation","Blurry Dreams")){
-  #browser #tabbrowser-tabpanels:not([zen-split-view="true"]) > .browserSidebarContainer {
-    opacity: 0 !important;
-    filter: blur(10px) saturate(0.8);
-    transform: translateX(-10px) scale(0.98);
-    transition: none !important;
-  }
-
-  #browser #tabbrowser-tabpanels:not([zen-split-view="true"]) > .browserSidebarContainer.deck-selected {
-    opacity: 1 !important;
-    filter: blur(0px) saturate(1);
-    transform: translateX(0) scale(1);
-    transition: opacity 0.4s ease, 
-                filter 0.4s ease,
-                transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) !important;
-  }
-}
-
-@media (-moz-pref("wireframe.tab-switch.animation","Prism Shatter")){
-  #browser #tabbrowser-tabpanels:not([zen-split-view="true"]) > .browserSidebarContainer {
-    opacity: 0;
-    transform: scale(1.07) translateY(-6px);
-    filter: brightness(140%) saturate(1.3);
-    transition: none !important;
-  }
-  #browser #tabbrowser-tabpanels:not([zen-split-view="true"]) > .browserSidebarContainer.deck-selected {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-    filter: none;
-    transition: opacity .22s ease-out,
-                transform .25s cubic-bezier(.3,.8,.2,1),
-                filter .22s ease-out !important;
-  }
-}
-
-@media (-moz-pref("wireframe.tab-switch.animation","Hard Cut")){
-  #browser #tabbrowser-tabpanels:not([zen-split-view="true"]) > .browserSidebarContainer {
-    opacity: 0;
-    filter: brightness(60%) contrast(200%);
-    transform: translateY(-4px) scale(.98);
-    transition: none !important;
-  }
-  #browser #tabbrowser-tabpanels:not([zen-split-view="true"]) > .browserSidebarContainer.deck-selected {
-    opacity: 1;
-    filter: none;
-    transform: translateY(0) scale(1);
-    transition: opacity .12s linear,
-                transform .12s linear,
-                filter .12s linear !important;
-  }
-}
-
-@media (-moz-pref("wireframe.tab-switch.animation","Monolith Slide")){
-  #browser #tabbrowser-tabpanels:not([zen-split-view="true"]) > .browserSidebarContainer {
-    opacity: 0;
-    transform: translateX(-20px) scale(1.02);
-    filter: grayscale(100%) contrast(140%);
-    transition: none !important;
-  }
-  #browser #tabbrowser-tabpanels:not([zen-split-view="true"]) > .browserSidebarContainer.deck-selected {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-    filter: none;
-    transition: opacity .22s ease-out,
-                transform .24s cubic-bezier(.4,0,.2,1),
-                filter .22s ease-out !important;
-  }
-}
-
-@media (-moz-pref("wireframe.tab-switch.animation","Film Dissolve")){
-  #browser #tabbrowser-tabpanels:not([zen-split-view="true"]) > .browserSidebarContainer {
-    opacity: .6 !important;
-    filter: blur(2px) contrast(.8) !important;
-    transition: none !important;
-  }
-
-  #browser #tabbrowser-tabpanels:not([zen-split-view="true"]) > .browserSidebarContainer.deck-selected {
-    opacity: 1 !important;
-    filter: blur(0) contrast(1) !important;
-    transition: opacity .25s ease,
-                filter .25s ease !important;
+@keyframes wf-tab-in {
+  from {
+    opacity: var(--wf-tab-from, 0);
+    translate: var(--wf-tab-x, 0px) var(--wf-tab-y, 0px);
+    scale: var(--wf-tab-scale, 1);
+    filter: var(--wf-tab-filter, none);
   }
 }
 
@@ -344,7 +264,7 @@
       --bar-pcent: 100%;
     }
 
-      @media (-moz-bool-pref: "zen.view.compact.hide-toolbar") {
+      @media (-moz-pref("zen.view.compact.hide-toolbar")) {
       :root:not([zen-single-toolbar='true']):has([zen-compact-mode='true']) {
         &:has(#zen-appcontent-navbar-wrapper[zen-has-hover]),
         &:has(#zen-appcontent-navbar-wrapper[zen-user-show]),
@@ -431,7 +351,7 @@
       --bar-pcent: 100%;
     }
 
-      @media (-moz-bool-pref: "zen.view.compact.hide-toolbar") {
+      @media (-moz-pref("zen.view.compact.hide-toolbar")) {
       :root:not([zen-single-toolbar='true']):has([zen-compact-mode='true']) {
         &:has(#zen-appcontent-navbar-wrapper[zen-has-hover]),
         &:has(#zen-appcontent-navbar-wrapper[zen-user-show]),

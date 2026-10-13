@@ -35,7 +35,6 @@
     height: var(--wf-blank-logo-size, 150px) !important;
     opacity: 0 !important; /* hidden by default */
     transition: opacity 0.18s ease !important; /* smooth fade */
-    transition-delay: 0.33s ease !important; /* added delay */
     pointer-events: none !important;
     z-index: 1 !important;
     background-repeat: no-repeat !important;

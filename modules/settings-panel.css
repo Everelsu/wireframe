@@ -147,6 +147,24 @@
     & small {
       opacity: 0.5;
     }
+
+    transition: opacity 0.2s var(--wf-ease, ease), background-color 0.18s var(--wf-ease, ease);
+
+    /* does nothing in the current setup: locked, says what it needs */
+    &[data-blocked] {
+      opacity: 0.45;
+
+      & > :not(label) {
+        filter: grayscale(1);
+      }
+
+      & .wf-why {
+        display: block;
+        margin-top: 2px;
+        font-size: 0.85em;
+        opacity: 0.9;
+      }
+    }
   }
 
   /* switch */
