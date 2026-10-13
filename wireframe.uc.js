@@ -228,6 +228,7 @@
 
     const finish = () => {
       const held = closing?.held ?? [];
+      const fromEsc = closing?.fromEsc;
       closing = null;
       urlbar.removeAttribute("wf-closing");
       urlbar.removeAttribute("wf-origin");
@@ -240,6 +241,12 @@
         }
       }
       replaying = false;
+      // Esc in a click-opened bar leaves focus in it, so Firefox would keep
+      // it open; finish what Esc meant
+      if (fromEsc && urlbar.hasAttribute("breakout-extend")) {
+        gURLBar.blur();
+        gBrowser.selectedBrowser.focus();
+      }
     };
 
     const begin = () => {
@@ -264,6 +271,7 @@
       // Esc: Zen closes the results and the bar collapses as a consequence;
       // treat it as the start of the collapse so the results go with it
       if (urlbar.hasAttribute("breakout-extend") && performance.now() - escAt < 60 && begin()) {
+        closing.fromEsc = true;
         closing.held.push(step);
         return;
       }
@@ -273,6 +281,20 @@
     window.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && urlbar.hasAttribute("breakout-extend")) escAt = performance.now();
     }, true);
+
+    // safety net: if the browser hid the panel natively while Firefox still
+    // treats the bar as expanded, it would sit out of view until a reload.
+    // Put it back in the sidebar.
+    urlbar.addEventListener("toggle", (e) => {
+      if (e.newState !== "closed" || closing) return;
+      requestAnimationFrame(() => {
+        if (!closing && !urlbar.matches(":popover-open") && urlbar.hasAttribute("breakout-extend")) {
+          toggle.call(urlbar, "breakout-extend", false);
+          urlbar.removeAttribute("wf-origin");
+          if (urlbar.hasAttribute("focused")) gURLBar.blur();
+        }
+      });
+    });
     // Escape would also hide the popover natively right after Firefox
     // handled it; Firefox hides it itself anyway (held while we animate)
     window.addEventListener("keydown", (e) => {

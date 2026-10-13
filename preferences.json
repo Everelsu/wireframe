@@ -72,10 +72,14 @@
   {
     "type": "dropdown",
     "property": "wireframe.transparency",
-    "label": "Window transparency (desktop shows through)",
+    "label": "Window transparency (Windows shows it only in the title strip)",
     "value": "string",
-    "defaultValue": "glass",
+    "defaultValue": "off",
     "options": [
+      {
+        "value": "off",
+        "label": "Off (solid)"
+      },
       {
         "value": "glass",
         "label": "Glass"
@@ -83,10 +87,6 @@
       {
         "value": "clear",
         "label": "Clear"
-      },
-      {
-        "value": "off",
-        "label": "Off (solid)"
       }
     ]
   },

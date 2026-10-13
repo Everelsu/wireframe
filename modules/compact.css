@@ -26,16 +26,21 @@
       position: relative !important;
     }
 
+    /* only the top-right corner where the window controls live: the
+       rest of the top edge belongs to the site */
     & #zen-appcontent-navbar-wrapper {
       position: absolute !important;
-      inset: 0 0 auto 0 !important;
+      inset: 0 0 auto auto !important;
+      width: max-content !important;
+      min-width: 0 !important;
       z-index: 3 !important;
       background: transparent;
+      border-end-start-radius: var(--na-tab-border-radius);
       transition: background-color 0.24s var(--wf-ease, ease), box-shadow 0.24s var(--wf-ease, ease);
 
       &[zen-has-hover] {
         background: var(--zen-main-browser-background-toolbar, var(--na-color-bg)) !important;
-        box-shadow: inset 0 -1px 0 var(--wf-float-line), 0 10px 30px rgb(0 0 0 / 0.35);
+        box-shadow: inset 0 0 0 1px var(--wf-float-line), 0 10px 30px rgb(0 0 0 / 0.35);
       }
     }
 

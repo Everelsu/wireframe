@@ -53,7 +53,7 @@ zen-library {
   border: 2px solid var(--na-color-border);
   border-radius: var(--na-user-border-radius);
   corner-shape: var(--wf-shape-panel) !important;
-  background: color-mix(in srgb, var(--na-color-bg) 55%, transparent);
+  background: var(--na-color-bg);
   overflow: clip;
 
   /* section title */
@@ -198,4 +198,14 @@ zen-library {
 .zen-library-search-box {
   flex: 1 !important;
   min-width: 0 !important;
+}
+
+/* Zen caps list sections at 308px; let them use the wider panel */
+.zen-library-section {
+  max-width: none !important;
+}
+
+/* the library is its own surface: in compact mode nothing sits behind it */
+zen-library[open] {
+  background: var(--zen-main-browser-background-toolbar, var(--na-color-bg));
 }
