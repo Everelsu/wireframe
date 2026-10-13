@@ -312,17 +312,19 @@
   document.getElementById("appMenu-popup")?.addEventListener("popupshowing", addMenuItem);
   addMenuItem();
 
-  // ---------- transparency: no system border ----------
-  // With "accent color on title bars and window borders" on, Windows draws
-  // a thin border around the active window, and on a see-through window it
-  // shows as a stray dark line. No CSS reaches it: ask the window manager
-  // to leave it out while the window is transparent (Windows 11; older
-  // versions just ignore the call).
+  // ---------- transparency: no system caption / border ----------
+  // With "accent color on title bars and window borders" on, Windows tints
+  // the caption strip (the top ~30px) of the active window and draws a
+  // border around it. On a see-through window (MicaForEveryone) that shows
+  // as a darker band along the top that no CSS reaches. Ask the window
+  // manager to leave both out while the window is transparent (Windows 11;
+  // older versions ignore the call), and to restore them otherwise.
   if (AppConstants.platform === "win") {
     const DWMWA_BORDER_COLOR = 34;
+    const DWMWA_CAPTION_COLOR = 35;
     const NONE = 0xfffffffe;
     const DEFAULT = 0xffffffff;
-    const setBorder = () => {
+    const applyFrame = () => {
       const see = Services.prefs.getStringPref("wireframe.transparency", "off") !== "off";
       try {
         const { ctypes } = ChromeUtils.importESModule("resource://gre/modules/ctypes.sys.mjs");
@@ -331,18 +333,23 @@
         try {
           const set = dwm.declare("DwmSetWindowAttribute", ctypes.winapi_abi, ctypes.int32_t,
             ctypes.voidptr_t, ctypes.uint32_t, ctypes.voidptr_t, ctypes.uint32_t);
+          const hwnd = ctypes.voidptr_t(ctypes.UInt64(handle));
           const color = ctypes.uint32_t(see ? NONE : DEFAULT);
-          set(ctypes.voidptr_t(ctypes.UInt64(handle)), DWMWA_BORDER_COLOR, color.address(), 4);
+          set(hwnd, DWMWA_BORDER_COLOR, color.address(), 4);
+          set(hwnd, DWMWA_CAPTION_COLOR, color.address(), 4);
         } finally {
           dwm.close();
         }
       } catch (e) {
-        console.error("[Wireframe] window border:", e);
+        console.error("[Wireframe] window frame:", e);
       }
     };
-    setBorder();
-    Services.prefs.addObserver("wireframe.transparency", setBorder);
-    window.addEventListener("unload", () => Services.prefs.removeObserver("wireframe.transparency", setBorder), { once: true });
+    applyFrame();
+    Services.prefs.addObserver("wireframe.transparency", applyFrame);
+    // the window manager may repaint the frame its own way after these
+    window.addEventListener("sizemodechange", applyFrame);
+    window.addEventListener("activate", applyFrame);
+    window.addEventListener("unload", () => Services.prefs.removeObserver("wireframe.transparency", applyFrame), { once: true });
   }
 
   // ---------- split by dragging a tab onto a tab ----------
