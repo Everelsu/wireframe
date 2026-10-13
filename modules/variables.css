@@ -1,6 +1,9 @@
 /* === User defined configs ===*/
 :root {
-  --na-color-border: var(--wf-border-color, light-dark(rgba(0, 0, 0, 1), rgba(209, 207, 192, 1)));
+  /* frame color (pref wireframe.frame.color). Deliberately not a free-text
+     pref: Sine turns an empty text pref into an empty variable, which broke
+     every frame. */
+  --na-color-border: light-dark(rgba(0, 0, 0, 1), rgba(209, 207, 192, 1));
 }
 
 :root {
@@ -72,6 +75,13 @@
    the real corner instead of leaving black wedges. */
 @media (-moz-platform: windows) {
   :root { --wf-radius-ratio-window: 0.9; }
+}
+
+@media (-moz-pref("wireframe.frame.color", "white")) {
+  :root { --na-color-border: light-dark(rgb(0 0 0), rgb(245 245 245)); }
+}
+@media (-moz-pref("wireframe.frame.color", "accent")) {
+  :root { --na-color-border: AccentColor; }
 }
 
 /* Corner roundness preference (percent → multiplier) */
@@ -223,3 +233,8 @@
     --na-urlbar-bg: #f3f0e611, #f3f0e6FF;
   }
 } */
+/* Without the corner-shape engine every corner is a plain circle; Zen's
+   pre-multiplied radii would then come out 2-3x too round. */
+@media not (-moz-pref("layout.css.corner-shape.enabled")) {
+  :root { --zen-squircle-value: 1 !important; }
+}

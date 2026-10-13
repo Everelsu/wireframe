@@ -10,7 +10,7 @@
   // which part of the browser each setting touches (first match wins)
   const TARGETS = [
     [/controls|window-controls/, ".titlebar-buttonbox-container", "Window controls"],
-    [/^wireframe\.(window|transparency)|wf-border-color|squircle|^wireframe\.radius_scale/, "#browser", "Window"],
+    [/^wireframe\.(window|transparency)|wireframe.frame|squircle|^wireframe\.radius_scale/, "#browser", "Window"],
     [/webview|nogaps/, "#zen-tabbox-wrapper", "Page frame"],
     [/blank|wf-blank|pattern/, ".deck-selected .browserStack", "Page / empty tab"],
     [/essen/, ".zen-essentials-container", "Essentials"],

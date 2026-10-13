@@ -143,7 +143,7 @@
     --wf-rt: var(--na-urlbar-border-radius);
     --wf-rb: 0px;
     --wf-bc: var(--na-color-border);
-    --wf-notch-r: 26px;
+    --wf-notch-r: var(--na-user-border-radius, 16px);
     --wf-notch-w: 2px;
     inset: var(--wf-bt) var(--wf-br) var(--wf-bb) var(--wf-bl) !important;
     border-radius: var(--wf-rt) var(--wf-rt) var(--wf-rb) var(--wf-rb) !important;
@@ -153,8 +153,10 @@
     backdrop-filter: none !important;
     box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.28) !important;
 
-    /* concave fillets: the page frame's bottom line bends up into the sides
-       (feathered a pixel so the curve is anti-aliased) */
+    /* concave fillets: the page frame's bottom line bends up into the
+       sides. Drawn natively (a real rounded border with the page's own
+       corner shape, filled outside the curve by an unblurred shadow and
+       clipped to its box), so they render exactly like the page corners. */
     &::before,
     &::after {
       content: "";
@@ -162,22 +164,25 @@
       bottom: 0;
       width: var(--wf-notch-r);
       height: var(--wf-notch-r);
+      box-sizing: border-box;
       pointer-events: none;
-      --wf-notch-fill:
-        transparent calc(var(--wf-notch-r) - var(--wf-notch-w) - 0.6px),
-        var(--na-color-border) calc(var(--wf-notch-r) - var(--wf-notch-w) + 0.4px),
-        var(--na-color-border) calc(var(--wf-notch-r) - 0.6px),
-        var(--wf-surf-edge) calc(var(--wf-notch-r) + 0.4px);
+      border: 0 solid var(--na-color-border);
+      border-bottom-width: var(--wf-notch-w);
+      corner-shape: var(--wf-shape-panel) !important;
+      box-shadow: 0 0 0 var(--wf-notch-r) var(--wf-surf-edge);
+      clip-path: inset(0);
     }
 
     &::before {
       right: 100%;
-      background: radial-gradient(circle at 0 0, var(--wf-notch-fill));
+      border-right-width: var(--wf-notch-w);
+      border-bottom-right-radius: var(--wf-notch-r);
     }
 
     &::after {
       left: 100%;
-      background: radial-gradient(circle at 100% 0, var(--wf-notch-fill));
+      border-left-width: var(--wf-notch-w);
+      border-bottom-left-radius: var(--wf-notch-r);
     }
   }
 

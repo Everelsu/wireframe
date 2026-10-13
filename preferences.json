@@ -412,11 +412,25 @@
     ]
   },
   {
-    "type": "string",
-    "property": "wf-border-color",
-    "processAs": "root",
-    "label": "Frame color (any CSS color, empty = theme)",
-    "placeholder": "#000000"
+    "type": "dropdown",
+    "property": "wireframe.frame.color",
+    "label": "Frame color",
+    "value": "string",
+    "defaultValue": "cream",
+    "options": [
+      {
+        "value": "cream",
+        "label": "Cream"
+      },
+      {
+        "value": "white",
+        "label": "White"
+      },
+      {
+        "value": "accent",
+        "label": "System accent"
+      }
+    ]
   },
   {
     "type": "checkbox",
