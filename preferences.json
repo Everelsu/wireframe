@@ -71,27 +71,6 @@
   },
   {
     "type": "dropdown",
-    "property": "wireframe.transparency",
-    "label": "Window transparency (Windows: with MicaForEveryone)",
-    "value": "string",
-    "defaultValue": "off",
-    "options": [
-      {
-        "value": "off",
-        "label": "Off (solid)"
-      },
-      {
-        "value": "glass",
-        "label": "Glass"
-      },
-      {
-        "value": "clear",
-        "label": "Clear"
-      }
-    ]
-  },
-  {
-    "type": "dropdown",
     "property": "wireframe.browser.pattern",
     "label": "Background pattern",
     "value": "string",
@@ -1414,5 +1393,35 @@
     "label": "Glass tint context menus",
     "value": "boolean",
     "defaultValue": false
+  },
+  {
+    "type": "text",
+    "label": "Experimental",
+    "margin": "26px 0 8px 0",
+    "size": "20px"
+  },
+  {
+    "type": "separator"
+  },
+  {
+    "type": "dropdown",
+    "property": "wireframe.transparency",
+    "label": "Window transparency (experimental; Windows: needs MicaForEveryone)",
+    "value": "string",
+    "defaultValue": "off",
+    "options": [
+      {
+        "value": "off",
+        "label": "Off (solid)"
+      },
+      {
+        "value": "glass",
+        "label": "Glass"
+      },
+      {
+        "value": "clear",
+        "label": "Clear"
+      }
+    ]
   }
 ]
