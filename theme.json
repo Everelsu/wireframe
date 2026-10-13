@@ -15,5 +15,14 @@
     "Squared",
     "Wireframe"
   ],
-  "fork": ["zen"]
+  "fork": [
+    "zen"
+  ],
+  "scripts": {
+    "wireframe.uc.js": {
+      "include": [
+        "chrome://browser/content/browser.xhtml"
+      ]
+    }
+  }
 }

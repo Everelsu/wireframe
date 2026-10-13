@@ -1,11 +1,18 @@
-/* 0 = dark tint, also the fallback when the pref is unset/"" */
-@media not (-moz-pref("wireframe.blank.theme", 1)) {
-  @media not (-moz-pref("wireframe.blank.theme", 2)) {
+/* default (unset / "" / 2) = transparent: the window background shows through */
+@media not (-moz-pref("wireframe.blank.theme", 0)) {
+  @media not (-moz-pref("wireframe.blank.theme", 1)) {
+    :root {
+        --na-blank-bg: transparent;
+        --zen-logo-filter: invert(1);
+    }
+  }
+}
+
+@media (-moz-pref("wireframe.blank.theme", 0)) {
     :root {
         --na-blank-bg: rgba(30, 30, 31, 0.75);
         --zen-logo-filter: invert(1) hue-rotate(180deg);
     }
-  }
 }
 
 @media (-moz-pref("wireframe.blank.theme", 1)) {
@@ -14,11 +21,7 @@
     }
 }
 
-@media (-moz-pref("wireframe.blank.theme", 2)) {
-    :root {
-        --na-blank-bg: rgba(30, 30, 31, 0);
-    }
-}
+
 
 /* === Empty-tab logo: colorable without touching the bg or PiP === */
 
@@ -88,11 +91,7 @@
         --zen-logo-filter: invert(0);
     }
 }
-@media (-moz-pref("wireframe.blank.theme", 2)) {
-    :root {
-        --zen-logo-filter: invert(1);
-    }
-}
+
 
 /* === Logo Options (switchable via wireframe.blank.logo) === */
 

@@ -68,6 +68,12 @@
   --zen-webview-border-radius: calc(var(--na-user-border-radius) * var(--zen-squircle-value));
 }
 
+/* Windows 11 rounds the window itself at ~8px: match it so the frame hugs
+   the real corner instead of leaving black wedges. */
+@media (-moz-platform: windows) {
+  :root { --wf-radius-ratio-window: 0.9; }
+}
+
 /* Corner roundness preference (percent → multiplier) */
 @media (-moz-pref("wireframe.radius_scale", 0))   { :root { --wf-radius-scale: 0; } }
 @media (-moz-pref("wireframe.radius_scale", 50))  { :root { --wf-radius-scale: 0.5; } }

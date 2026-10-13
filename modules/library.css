@@ -26,9 +26,84 @@ zen-library {
   corner-shape: var(--wf-shape-tab) !important;
 }
 
-.zen-library-tab[active]::before {
-  outline: 1px solid var(--wf-library-line);
-  outline-offset: -1px;
+/* rail: quiet items, the active one marked by a cream bar */
+.zen-library-tab {
+  opacity: 0.55;
+  transition: opacity 0.15s ease;
+
+  &:hover,
+  &[active] {
+    opacity: 1;
+  }
+
+  &[active]::before {
+    background: color-mix(in srgb, currentColor 6%, transparent) !important;
+    box-shadow: inset 2px 0 0 var(--na-color-border);
+  }
+}
+
+:root[zen-right-side="true"] .zen-library-tab[active]::before {
+  box-shadow: inset -2px 0 0 var(--na-color-border);
+}
+
+/* content: a second "page" next to the webview, framed the same way */
+#zen-library-content {
+  margin: var(--zen-element-separation, 8px) !important;
+  margin-inline-end: 0 !important;
+  border: 2px solid var(--na-color-border);
+  border-radius: var(--na-user-border-radius);
+  corner-shape: var(--wf-shape-panel) !important;
+  background: color-mix(in srgb, var(--na-color-bg) 55%, transparent);
+  overflow: clip;
+
+  /* section title */
+  &::before {
+    display: block;
+    padding: 18px 18px 4px;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    pointer-events: none;
+  }
+}
+
+:root[zen-right-side="true"] #zen-library-content {
+  margin-inline: 0 var(--zen-element-separation, 8px) !important;
+}
+
+zen-library:has(.zen-library-tab[active][data-section="media"]) #zen-library-content::before { content: "Media"; }
+zen-library:has(.zen-library-tab[active][data-section="downloads"]) #zen-library-content::before { content: "Downloads"; }
+zen-library:has(.zen-library-tab[active][data-section="boosts"]) #zen-library-content::before { content: "Boosts"; }
+zen-library:has(.zen-library-tab[active][data-section="spaces"]) #zen-library-content::before { content: "Spaces"; }
+zen-library:has(.zen-library-tab[active][data-section="history"]) #zen-library-content::before { content: "History"; }
+
+/* search + filter: hairlines instead of grey pills */
+:is(.zen-library-search-box, .zen-library-filter-button, .zen-library-filter-done, .zen-library-filter-chip) {
+  background: transparent !important;
+  border: 1px solid var(--wf-library-line) !important;
+  border-radius: var(--na-tab-border-radius) !important;
+  corner-shape: var(--wf-shape-tab) !important;
+  box-shadow: none !important;
+  transition: border-color 0.15s ease;
+}
+
+.zen-library-search-box:focus-within,
+.zen-library-filter-chip:is([selected], [checked], [active]) {
+  border-color: var(--na-color-border) !important;
+}
+
+.zen-library-group h3,
+.zen-library-filter-group h3 {
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.5;
+}
+
+.zen-library-empty {
+  opacity: 0.45;
+  font-size: 12px;
 }
 
 /* list rows (history, downloads, boosts, search) */

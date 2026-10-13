@@ -1,447 +1,194 @@
 [
   {
     "type": "text",
-    "label": "Wireframe 2.0 Theme Settings",
-    "margin": "20px 0 25px 0",
+    "label": "Wireframe",
+    "margin": "20px 0 6px 0",
     "size": "29px"
   },
   {
     "type": "text",
-    "label": "Window Controls",
-    "margin": "30px 0 20px 0",
-    "size": "25px"
+    "label": "Minimal frame theme for Zen. Most changes apply instantly.",
+    "margin": "0 0 10px 0",
+    "size": "13px"
+  },
+  {
+    "type": "text",
+    "label": "Look",
+    "margin": "26px 0 8px 0",
+    "size": "20px"
   },
   {
     "type": "separator"
   },
   {
     "type": "dropdown",
-    "property": "wireframe.controls.style",
-    "label": "Window controls style",
+    "property": "wireframe.font",
+    "label": "Interface font",
     "value": "string",
-    "defaultValue": "windows",
+    "defaultValue": "Onest",
     "options": [
       {
-        "value": "windows",
-        "label": "Windows"
+        "value": "Onest",
+        "label": "Onest (Cyrillic)"
       },
       {
-        "value": "macos",
-        "label": "macOS"
+        "value": "SF-Pro",
+        "label": "SF-Pro"
       },
       {
-        "value": "native",
-        "label": "Native (untouched)"
+        "value": "Bricolage",
+        "label": "Bricolage Grotesque (Latin only, Cyrillic via fallback)"
+      },
+      {
+        "value": "Monocraft",
+        "label": "Monocraft"
+      },
+      {
+        "value": "GeistMono",
+        "label": "Geist Mono"
+      },
+      {
+        "value": "JetBrainsMono",
+        "label": "JetBrains Mono"
+      },
+      {
+        "value": "SUSE",
+        "label": "SUSE (Latin only, Cyrillic via fallback)"
+      },
+      {
+        "value": "SUSEMono",
+        "label": "SUSE Mono (Latin only, Cyrillic via fallback)"
       }
     ]
   },
   {
-    "type": "separator"
+    "type": "string",
+    "property": "wireframe-font-size",
+    "processAs": "root",
+    "label": "Tab font size (e.g. 13px, empty = default)",
+    "defaultValue": "",
+    "placeholder": "12px"
   },
   {
-    "type": "checkbox",
-    "property": "wireframe.macos.controls.focus",
-    "label": "Greyscale controls if window is inactive (macOS style only)",
-    "value": "boolean",
-    "defaultValue": true
+    "type": "dropdown",
+    "property": "wireframe.transparency",
+    "label": "Window transparency (desktop shows through)",
+    "value": "string",
+    "defaultValue": "glass",
+    "options": [
+      {
+        "value": "glass",
+        "label": "Glass"
+      },
+      {
+        "value": "clear",
+        "label": "Clear"
+      },
+      {
+        "value": "off",
+        "label": "Off (solid)"
+      }
+    ]
   },
   {
-    "type": "separator"
+    "type": "dropdown",
+    "property": "wireframe.browser.pattern",
+    "label": "Background pattern",
+    "value": "string",
+    "defaultValue": "none",
+    "options": [
+      {
+        "value": "none",
+        "label": "None"
+      },
+      {
+        "value": "fancy-rect",
+        "label": "Fancy Rectangles"
+      },
+      {
+        "value": "leaf",
+        "label": "Leafs"
+      },
+      {
+        "value": "stripes",
+        "label": "Stripes"
+      },
+      {
+        "value": "stars",
+        "label": "Stars"
+      },
+      {
+        "value": "waves",
+        "label": "Waves"
+      },
+      {
+        "value": "cutout",
+        "label": "Cutout"
+      },
+      {
+        "value": "polka-dots",
+        "label": "Polka Dots"
+      },
+      {
+        "value": "zig-zag",
+        "label": "Zig Zag"
+      },
+      {
+        "value": "marty-supreme",
+        "label": "MARTY SUPREME"
+      }
+    ]
   },
   {
-    "type": "checkbox",
-    "property": "wireframe.controls.reverse",
-    "label": "Reverse window controls (macOS style only)",
-    "value": "boolean",
-    "defaultValue": false
+    "type": "string",
+    "property": "pattern-opacity",
+    "processAs": "root",
+    "label": "Pattern opacity (0-1)",
+    "defaultValue": "0.4",
+    "placeholder": "0.4"
+  },
+  {
+    "type": "string",
+    "property": "pattern-brightness",
+    "processAs": "root",
+    "label": "Pattern brightness (0-1)",
+    "defaultValue": "0.7",
+    "placeholder": "0.7"
+  },
+  {
+    "type": "text",
+    "label": "Empty tab",
+    "margin": "26px 0 8px 0",
+    "size": "20px"
   },
   {
     "type": "separator"
   },
   {
     "type": "dropdown",
-    "property": "wireframe.macos.controls.radius",
-    "label": "macOS window controls radius",
+    "property": "wireframe.blank.theme",
+    "label": "Empty tab background",
     "value": "number",
-    "defaultValue": 0,
+    "defaultValue": 2,
     "options": [
       {
+        "value": 2,
+        "label": "Transparent (see-through)"
+      },
+      {
         "value": 0,
-        "label": "Square"
+        "label": "Dark tint"
       },
       {
         "value": 1,
-        "label": "Squircle"
-      },
-      {
-        "value": 2,
-        "label": "Circle"
+        "label": "Light tint"
       }
     ]
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "zen.view.experimental-force-window-controls-left",
-    "label": "Force window controls to the left (for macOS style controls only)",
-    "value": "boolean",
-    "defaultValue": false,
-    "restart": true
-  },
-  {
-    "type": "text",
-    "label": "Toolbar and Navigation",
-    "margin": "30px 0 20px 0",
-    "size": "25px"
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.toolbar.hide",
-    "label": "Auto hide toolbar buttons (Reveal on hover)",
-    "value": "boolean",
-    "defaultValue": false
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.navigation.hide",
-    "label": "Disable navigation buttons",
-    "value": "boolean",
-    "defaultValue": false
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.workspace.icon.hide",
-    "label": "Hide workspace indicator icon",
-    "value": "boolean",
-    "defaultValue": true
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.workspace-switch.fan",
-    "label": "Enable fan style workspace switcher (experimental)",
-    "value": "boolean",
-    "defaultValue": false
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.sidebar-foot.hide",
-    "label": "Hide sidebar foot buttons",
-    "value": "boolean",
-    "defaultValue": true
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.statusbar.disable",
-    "label": "Disable status bar",
-    "value": "boolean",
-    "defaultValue": true
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.floating-compact-sidebar.enabled",
-    "label": "Enable floating compact sidebar",
-    "value": "boolean",
-    "defaultValue": true
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.compact-sidebar.hide",
-    "label": "Hide compact sidebar on empty tab",
-    "value": "boolean",
-    "defaultValue": false
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.compact.sidebar.transparent",
-    "label": "Make sidebar transparent in compact mode",
-    "value": "boolean",
-    "defaultValue": false
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.contextmenu",
-    "label": "Enable glass tint context menu",
-    "value": "boolean",
-    "defaultValue": false
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.ff-sidebar.floating",
-    "label": "Enable floating firefox sidebar",
-    "value": "boolean",
-    "defaultValue": true
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.nogaps.enabled",
-    "label": "Enable no gap for single-toolbar",
-    "value": "boolean",
-    "defaultValue": false
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.nogaps.border.enabled",
-    "label": "Show splitter (for no gaps mod)",
-    "value": "boolean",
-    "defaultValue": false
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.pinned-ext.enabled",
-    "label": "Enable pinned extensions",
-    "value": "boolean",
-    "defaultValue": false
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.trackpad.animation",
-    "label": "Enable trackpad animations",
-    "value": "boolean",
-    "defaultValue": true
-  },
-  {
-    "type": "text",
-    "label": "URL bar Settings",
-    "margin": "30px 0 20px 0",
-    "size": "25px"
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "dropdown",
-    "property": "wireframe.urlbar.style",
-    "label": "Change URL bar style",
-    "value": "string",
-    "defaultValue": "slim",
-    "options": [
-      {
-        "value": "slim",
-        "label": "slim"
-      },
-      {
-        "value": "slim(center)",
-        "label": "Slim(Centered)"
-      },
-      {
-        "value": "full",
-        "label": "full"
-      }
-    ]
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.urlbar.blurred",
-    "label": "Enable tinted glass effect on URL bar",
-    "value": "boolean",
-    "defaultValue": false
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "property": "wireframe.urlbar.position.top",
-    "label": "Position URL bar at the top (for multiple and collapsed toolbar only)",
-    "defaultValue": false,
-    "type": "checkbox",
-    "value": "boolean"
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.urlbar-loading.text",
-    "label": "Enable custom new urlbar loading text",
-    "value": "boolean",
-    "defaultValue": true
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "dropdown",
-    "label": "URLBar Opening Animation",
-    "property": "wireframe.urlbar-open.effect",
-    "value": "string",
-    "defaultValue": "Slide from Bottom",
-    "options": [
-      {
-        "value": "Slide from Bottom",
-        "label": "Slide from Bottom"
-      },
-      {
-        "value": "Magnetic Rise",
-        "label": "Magnetic Rise"
-      },
-      {
-        "value": "PopCorn",
-        "label": "PopCorn"
-      },
-      {
-        "value": "Drop Off",
-        "label": "Drop Off"
-      },
-      {
-        "value": "Neon Flash",
-        "label": "Neon Flash"
-      },
-      {
-        "value": "Soft Warp",
-        "label": "Soft Warp"
-      },
-      {
-        "value": "Unfold",
-        "label": "Unfold"
-      },
-      {
-        "value": "Glitch Phase",
-        "label": "Glitch Phase"
-      },
-      {
-        "value": "Orbit Entry",
-        "label": "Orbit Entry"
-      },
-      {
-        "value": "Slam Up",
-        "label": "Slam Up"
-      },
-      {
-        "value": "Slinky Drop",
-        "label": "Slinky Drop"
-      },
-      {
-        "value": "Plane Shift",
-        "label": "Plane Shift"
-      }
-    ]
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "dropdown",
-    "label": "Webview Animation",
-    "property": "wireframe.urlbar-focus.effect",
-    "value": "string",
-    "defaultValue": "Hard Shift",
-    "options": [
-      {
-        "value": "Hard Shift",
-        "label": "Hard Shift"
-      },
-      {
-        "value": "Lights Off",
-        "label": "Lights Off"
-      },
-      {
-        "value": "Pushed Away",
-        "label": "Pushed Away"
-      },
-      {
-        "value": "Soft Fade",
-        "label": "Soft Fade"
-      },
-      {
-        "value": "Film Grain Blur",
-        "label": "Film Grain Blur"
-      },
-      {
-        "value": "Flash Bang",
-        "label": "Flash Bang"
-      },
-      {
-        "value": "CRT Snap",
-        "label": "CRT Snap"
-      }
-    ]
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.urlbar.icons.hide",
-    "label": "Hide website icons in URL bar results",
-    "value": "boolean",
-    "defaultValue": true
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.urlbar.icons.greyscale",
-    "label": "Make website icons greyscale in URL bar results",
-    "value": "boolean",
-    "defaultValue": false
-  },
-  {
-    "type": "text",
-    "label": "Cool Visual Element Settings",
-    "margin": "30px 0 20px 0",
-    "size": "25px"
-  },
-  {
-    "type": "separator"
   },
   {
     "type": "dropdown",
     "property": "wireframe.blank.logo",
-    "label": "Change blank page logo",
+    "label": "Empty tab logo",
     "value": "string",
     "defaultValue": "wireframe",
     "options": [
@@ -520,288 +267,98 @@
     ]
   },
   {
-    "type": "separator"
-  },
-  {
     "type": "string",
     "property": "wf-blank-logo-size",
     "defaultValue": "150px",
     "processAs": "root",
-    "label": "Change blank page logo size",
+    "label": "Empty tab logo size",
     "placeholder": "150px"
-  },
-  {
-    "type": "separator"
   },
   {
     "type": "string",
     "property": "wf-blank-logo-opacity",
     "defaultValue": "0.75",
     "processAs": "root",
-    "label": "Change blank page logo opacity",
+    "label": "Empty tab logo opacity (0-1)",
     "placeholder": "0.75"
+  },
+  {
+    "type": "text",
+    "label": "Window",
+    "margin": "26px 0 8px 0",
+    "size": "20px"
   },
   {
     "type": "separator"
   },
   {
     "type": "dropdown",
-    "property": "wireframe.blank.theme",
-    "label": "Change color scheme for about:blank",
+    "property": "wireframe.controls.style",
+    "label": "Window controls style",
+    "value": "string",
+    "defaultValue": "windows",
+    "options": [
+      {
+        "value": "windows",
+        "label": "Windows"
+      },
+      {
+        "value": "macos",
+        "label": "macOS"
+      },
+      {
+        "value": "native",
+        "label": "Native (untouched)"
+      }
+    ]
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.macos.controls.focus",
+    "label": "macOS: grey controls until hovered",
+    "value": "boolean",
+    "defaultValue": true
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.controls.reverse",
+    "label": "macOS: reverse button order",
+    "value": "boolean",
+    "defaultValue": false
+  },
+  {
+    "type": "dropdown",
+    "property": "wireframe.macos.controls.radius",
+    "label": "macOS: button shape",
     "value": "number",
     "defaultValue": 0,
     "options": [
       {
         "value": 0,
-        "label": "Dark Tint"
+        "label": "Square"
       },
       {
         "value": 1,
-        "label": "Light Tint"
+        "label": "Squircle"
       },
       {
         "value": 2,
-        "label": "Transparent"
+        "label": "Circle"
       }
     ]
   },
   {
-    "type": "separator"
-  },
-  {
-    "type": "dropdown",
-    "property": "wireframe.browser.pattern",
-    "label": "Change browser background pattern",
-    "value": "string",
-    "defaultValue": "none",
-    "options": [
-      {
-        "value": "none",
-        "label": "None"
-      },
-      {
-        "value": "fancy-rect",
-        "label": "Fancy Rectangles"
-      },
-      {
-        "value": "leaf",
-        "label": "Leafs"
-      },
-      {
-        "value": "stripes",
-        "label": "Stripes"
-      },
-      {
-        "value": "stars",
-        "label": "Stars"
-      },
-      {
-        "value": "waves",
-        "label": "Waves"
-      },
-      {
-        "value": "cutout",
-        "label": "Cutout"
-      },
-      {
-        "value": "polka-dots",
-        "label": "Polka Dots"
-      },
-      {
-        "value": "zig-zag",
-        "label": "Zig Zag"
-      },
-      {
-        "value": "marty-supreme",
-        "label": "MARTY SUPREME"
-      }
-    ]
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "string",
-    "property": "pattern-opacity",
-    "processAs": "root",
-    "label": "Change browser background pattern opacity",
-    "defaultValue": "0.4",
-    "placeholder": "0.4"
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "string",
-    "property": "pattern-brightness",
-    "processAs": "root",
-    "label": "Change browser background pattern brightness",
-    "defaultValue": "0.7",
-    "placeholder": "0.7"
-  },
-  {
-    "type": "text",
-    "label": "Tab Settings",
-    "margin": "30px 0 20px 0",
-    "size": "25px"
-  },
-  {
-    "type": "separator"
-  },
-  {
     "type": "checkbox",
-    "property": "wireframe.new-tab.label",
-    "label": "Enable custom new tab label",
+    "property": "zen.view.experimental-force-window-controls-left",
+    "label": "macOS: place controls on the left (restart)",
     "value": "boolean",
-    "defaultValue": true
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.new-tab.reveal.animation",
-    "label": "Enable reveal on hover animation for new tab",
-    "value": "boolean",
-    "defaultValue": true
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "zen.theme.essentials-favicon-bg",
-    "label": "Enable favicon gradient background for essentials",
-    "value": "boolean",
-    "defaultValue": true
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.audio.indicator.disable",
-    "label": "Disable audio indicator on tab",
-    "value": "boolean",
-    "defaultValue": false
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.tab-hover.animation",
-    "label": "Enable tab hover animation",
-    "value": "boolean",
-    "defaultValue": true
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.tab-icon.invert",
-    "label": "Invert tab icon color",
-    "value": "boolean",
-    "defaultValue": true
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "dropdown",
-    "property": "wireframe.folders",
-    "label": "Folder styling options",
-    "value": "string",
-    "defaultValue": "border",
-    "options": [
-      {
-        "value": "border",
-        "label": "Border"
-      },
-      {
-        "value": "background",
-        "label": "Background"
-      }
-    ]
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "dropdown",
-    "property": "wireframe.tab-loading.animation",
-    "label": "Tab loading animation options",
-    "value": "string",
-    "defaultValue": "both",
-    "options": [
-      {
-        "value": "loadbar",
-        "label": "Loading Bar"
-      },
-      {
-        "value": "tab-bg-loading",
-        "label": "Tab Background Progress Bar"
-      },
-      {
-        "value": "both",
-        "label": "Both"
-      }
-    ]
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "dropdown",
-    "property": "wireframe.tab-switch.animation",
-    "label": "Tab switching animation options",
-    "value": "string",
-    "defaultValue": "Vertical Veil",
-    "options": [
-      {
-        "value": "Vertical Veil",
-        "label": "Vertical Veil"
-      },
-      {
-        "value": "Clean Sever",
-        "label": "Clean Sever"
-      },
-      {
-        "value": "Blurry Dreams",
-        "label": "Blurry Dreams"
-      },
-      {
-        "value": "Prism Shatter",
-        "label": "Prism Shatter"
-      },
-      {
-        "value": "Hard Cut",
-        "label": "Hard Cut"
-      },
-      {
-        "value": "Monolith Slide",
-        "label": "Monolith Slide"
-      },
-      {
-        "value": "Film Dissolve",
-        "label": "Film Dissolve"
-      }
-    ]
-  },
-  {
-    "type": "text",
-    "label": "Border Settings",
-    "margin": "30px 0 20px 0",
-    "size": "25px"
-  },
-  {
-    "type": "separator"
+    "defaultValue": false,
+    "restart": true
   },
   {
     "type": "dropdown",
     "property": "wireframe.window.border",
-    "label": "Change border around the browser window",
+    "label": "Window frame",
     "value": "string",
     "defaultValue": "wireframe",
     "options": [
@@ -816,74 +373,48 @@
     ]
   },
   {
-    "type": "separator"
+    "type": "dropdown",
+    "property": "wireframe.webview.border",
+    "label": "Page frame",
+    "value": "string",
+    "defaultValue": "wireframe",
+    "options": [
+      {
+        "value": "wireframe",
+        "label": "wireframe"
+      },
+      {
+        "value": "macos",
+        "label": "macos"
+      }
+    ]
   },
   {
     "type": "string",
     "property": "wf-border-color",
     "processAs": "root",
-    "label": "Change border color",
+    "label": "Frame color (any CSS color, empty = theme)",
     "placeholder": "#000000"
   },
   {
-    "type": "separator"
-  },
-  {
-    "type": "dropdown",
-    "property": "wireframe.webview.border",
-    "label": "Change border around the webview",
-    "value": "string",
-    "defaultValue": "wireframe",
-    "options": [
-      {
-        "value": "wireframe",
-        "label": "wireframe"
-      },
-      {
-        "value": "macos",
-        "label": "macos"
-      }
-    ]
-  },
-  {
-    "type": "separator"
-  },
-  {
     "type": "checkbox",
-    "property": "wireframe.tab-shadow.disabled",
-    "label": "Disable tab shadow",
-    "value": "boolean",
-    "defaultValue": true
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "dropdown",
-    "property": "wireframe.urlbar.border",
-    "label": "Change border around the URL bar",
-    "value": "string",
-    "defaultValue": "wireframe",
-    "options": [
-      {
-        "value": "wireframe",
-        "label": "wireframe"
-      },
-      {
-        "value": "macos",
-        "label": "macos"
-      }
-    ]
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.macos.border",
-    "label": "Enable macOS style border for compact sidebar and other elements",
+    "property": "wireframe.nogaps.enabled",
+    "label": "No gaps (page touches the window frame)",
     "value": "boolean",
     "defaultValue": false
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.nogaps.border.enabled",
+    "label": "No gaps: show divider line",
+    "value": "boolean",
+    "defaultValue": false
+  },
+  {
+    "type": "text",
+    "label": "Corners",
+    "margin": "26px 0 8px 0",
+    "size": "20px"
   },
   {
     "type": "separator"
@@ -891,7 +422,7 @@
   {
     "type": "dropdown",
     "property": "wireframe.radius_scale",
-    "label": "Corner roundness (all radii)",
+    "label": "Roundness - everything",
     "value": "number",
     "defaultValue": 100,
     "options": [
@@ -926,12 +457,9 @@
     ]
   },
   {
-    "type": "separator"
-  },
-  {
     "type": "dropdown",
     "property": "wireframe.webview.radius_scale",
-    "label": "Corner roundness - webview",
+    "label": "Roundness - page",
     "value": "number",
     "defaultValue": 100,
     "options": [
@@ -964,14 +492,11 @@
         "label": "Extra round"
       }
     ]
-  },
-  {
-    "type": "separator"
   },
   {
     "type": "dropdown",
     "property": "wireframe.window.radius_scale",
-    "label": "Corner roundness - window",
+    "label": "Roundness - window",
     "value": "number",
     "defaultValue": 100,
     "options": [
@@ -1004,14 +529,11 @@
         "label": "Extra round"
       }
     ]
-  },
-  {
-    "type": "separator"
   },
   {
     "type": "dropdown",
     "property": "wireframe.tab.radius_scale",
-    "label": "Corner roundness - tabs & folders",
+    "label": "Roundness - tabs & folders",
     "value": "number",
     "defaultValue": 100,
     "options": [
@@ -1044,14 +566,11 @@
         "label": "Extra round"
       }
     ]
-  },
-  {
-    "type": "separator"
   },
   {
     "type": "dropdown",
     "property": "wireframe.essen.radius_scale",
-    "label": "Corner roundness - essentials",
+    "label": "Roundness - essentials",
     "value": "number",
     "defaultValue": 100,
     "options": [
@@ -1084,14 +603,11 @@
         "label": "Extra round"
       }
     ]
-  },
-  {
-    "type": "separator"
   },
   {
     "type": "dropdown",
     "property": "wireframe.urlbar.radius_scale",
-    "label": "Corner roundness - urlbar",
+    "label": "Roundness - URL bar",
     "value": "number",
     "defaultValue": 100,
     "options": [
@@ -1126,12 +642,9 @@
     ]
   },
   {
-    "type": "separator"
-  },
-  {
     "type": "dropdown",
     "property": "wireframe.squircle",
-    "label": "Squircle exponent (corner geometry)",
+    "label": "Corner curve (squircle strength)",
     "value": "number",
     "defaultValue": 0,
     "options": [
@@ -1162,12 +675,9 @@
     ]
   },
   {
-    "type": "separator"
-  },
-  {
     "type": "dropdown",
     "property": "wireframe.webview.shape",
-    "label": "Corner shape - webview",
+    "label": "Shape - page",
     "value": "string",
     "defaultValue": "squircle",
     "options": [
@@ -1180,14 +690,11 @@
         "label": "Round"
       }
     ]
-  },
-  {
-    "type": "separator"
   },
   {
     "type": "dropdown",
     "property": "wireframe.window.shape",
-    "label": "Corner shape - window",
+    "label": "Shape - window",
     "value": "string",
     "defaultValue": "squircle",
     "options": [
@@ -1200,14 +707,11 @@
         "label": "Round"
       }
     ]
-  },
-  {
-    "type": "separator"
   },
   {
     "type": "dropdown",
     "property": "wireframe.tab.shape",
-    "label": "Corner shape - tabs & folders",
+    "label": "Shape - tabs & folders",
     "value": "string",
     "defaultValue": "squircle",
     "options": [
@@ -1224,14 +728,11 @@
         "label": "Pill"
       }
     ]
-  },
-  {
-    "type": "separator"
   },
   {
     "type": "dropdown",
     "property": "wireframe.essen.shape",
-    "label": "Corner shape - essentials",
+    "label": "Shape - essentials",
     "value": "string",
     "defaultValue": "squircle",
     "options": [
@@ -1250,12 +751,9 @@
     ]
   },
   {
-    "type": "separator"
-  },
-  {
     "type": "dropdown",
     "property": "wireframe.urlbar.shape",
-    "label": "Corner shape - urlbar",
+    "label": "Shape - URL bar",
     "value": "string",
     "defaultValue": "squircle",
     "options": [
@@ -1270,14 +768,150 @@
     ]
   },
   {
+    "type": "text",
+    "label": "Sidebar",
+    "margin": "26px 0 8px 0",
+    "size": "20px"
+  },
+  {
     "type": "separator"
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.toolbar.hide",
+    "label": "Reveal top buttons on hover",
+    "value": "boolean",
+    "defaultValue": false
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.navigation.hide",
+    "label": "Hide back / forward buttons",
+    "value": "boolean",
+    "defaultValue": false
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.workspace.icon.hide",
+    "label": "Reveal space icon on hover",
+    "value": "boolean",
+    "defaultValue": false
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.workspace-switch.fan",
+    "label": "Fan-style space switcher (experimental)",
+    "value": "boolean",
+    "defaultValue": false
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.sidebar-foot.hide",
+    "label": "Reveal bottom buttons on hover",
+    "value": "boolean",
+    "defaultValue": false
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.statusbar.disable",
+    "label": "Hide link status bar",
+    "value": "boolean",
+    "defaultValue": true
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.pinned-ext.enabled",
+    "label": "Pinned extensions row",
+    "value": "boolean",
+    "defaultValue": false
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.ff-sidebar.floating",
+    "label": "Floating Firefox sidebar",
+    "value": "boolean",
+    "defaultValue": true
+  },
+  {
+    "type": "text",
+    "label": "Compact mode",
+    "margin": "26px 0 8px 0",
+    "size": "20px"
+  },
+  {
+    "type": "separator"
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.floating-compact-sidebar.enabled",
+    "label": "Floating sidebar",
+    "value": "boolean",
+    "defaultValue": true
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.compact-sidebar.hide",
+    "label": "Hide sidebar on empty tab",
+    "value": "boolean",
+    "defaultValue": false
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.compact.sidebar.transparent",
+    "label": "Translucent sidebar",
+    "value": "boolean",
+    "defaultValue": false
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.no-gap.compact-mode",
+    "value": "boolean",
+    "defaultValue": false,
+    "label": "Remove top gap"
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.macos.border",
+    "label": "macOS-style rim on compact sidebar",
+    "value": "boolean",
+    "defaultValue": false
+  },
+  {
+    "type": "text",
+    "label": "Tabs & essentials",
+    "margin": "26px 0 8px 0",
+    "size": "20px"
+  },
+  {
+    "type": "separator"
+  },
+  {
+    "type": "dropdown",
+    "property": "wireframe.folders",
+    "label": "Open folder style",
+    "value": "string",
+    "defaultValue": "border",
+    "options": [
+      {
+        "value": "border",
+        "label": "Border"
+      },
+      {
+        "value": "background",
+        "label": "Background"
+      }
+    ]
   },
   {
     "type": "dropdown",
     "property": "wireframe.tab.borders",
-    "label": "Border styling for tabs",
+    "label": "Tab rim",
     "value": "string",
     "options": [
+      {
+        "value": "none",
+        "label": "None"
+      },
       {
         "value": "macos-all",
         "label": "macOS: All"
@@ -1286,17 +920,19 @@
         "value": "macos-active",
         "label": "macOS: Active"
       }
-    ]
-  },
-  {
-    "type": "separator"
+    ],
+    "defaultValue": "none"
   },
   {
     "type": "dropdown",
     "property": "wireframe.essen.borders",
-    "label": "Border styling for essentials",
+    "label": "Essentials rim",
     "value": "string",
     "options": [
+      {
+        "value": "none",
+        "label": "None"
+      },
       {
         "value": "macos-all",
         "label": "macOS: All"
@@ -1305,101 +941,203 @@
         "value": "macos-active",
         "label": "macOS: Active"
       }
-    ]
+    ],
+    "defaultValue": "none"
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.tab-shadow.disabled",
+    "label": "Remove tab shadow",
+    "value": "boolean",
+    "defaultValue": true
+  },
+  {
+    "type": "checkbox",
+    "property": "zen.theme.essentials-favicon-bg",
+    "label": "Essentials: blurred favicon glow",
+    "value": "boolean",
+    "defaultValue": true
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.tab-icon.invert",
+    "label": "Invert selected tab icon",
+    "value": "boolean",
+    "defaultValue": false
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.audio.indicator.disable",
+    "label": "Hide audio indicator",
+    "value": "boolean",
+    "defaultValue": false
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.new-tab.label",
+    "label": "Playful 'Where to?' new tab label",
+    "value": "boolean",
+    "defaultValue": false
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.new-tab.reveal.animation",
+    "label": "New tab button: reveal label on hover",
+    "value": "boolean",
+    "defaultValue": true
+  },
+  {
+    "type": "text",
+    "label": "URL bar",
+    "margin": "26px 0 8px 0",
+    "size": "20px"
   },
   {
     "type": "separator"
   },
   {
+    "property": "wireframe.urlbar.position.top",
+    "label": "URL bar at the top of the sidebar",
+    "defaultValue": false,
+    "type": "checkbox",
+    "value": "boolean"
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.urlbar.dim",
+    "label": "Dim the page while the URL bar is open",
+    "value": "boolean",
+    "defaultValue": true
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.urlbar-loading.text",
+    "label": "'wireframing...' text while loading",
+    "value": "boolean",
+    "defaultValue": true
+  },
+  {
     "type": "text",
-    "label": "Typography",
-    "margin": "30px 0 20px 0",
-    "size": "25px"
+    "label": "Motion",
+    "margin": "26px 0 8px 0",
+    "size": "20px"
   },
   {
     "type": "separator"
   },
   {
     "type": "dropdown",
-    "property": "wireframe.font",
-    "label": "Font",
+    "property": "wireframe.tab-switch.animation",
+    "label": "Tab switch animation",
     "value": "string",
-    "defaultValue": "Bricolage",
+    "defaultValue": "Vertical Veil",
     "options": [
       {
-        "value": "SF-Pro",
-        "label": "SF-Pro"
+        "value": "Vertical Veil",
+        "label": "Vertical Veil"
       },
       {
-        "value": "Bricolage",
-        "label": "Bricolage Grotesque"
+        "value": "Clean Sever",
+        "label": "Clean Sever"
       },
       {
-        "value": "Monocraft",
-        "label": "Monocraft"
+        "value": "Blurry Dreams",
+        "label": "Blurry Dreams"
       },
       {
-        "value": "GeistMono",
-        "label": "Geist Mono"
+        "value": "Prism Shatter",
+        "label": "Prism Shatter"
       },
       {
-        "value": "JetBrainsMono",
-        "label": "JetBrains Mono"
+        "value": "Hard Cut",
+        "label": "Hard Cut"
       },
       {
-        "value": "SUSE",
-        "label": "SUSE"
+        "value": "Monolith Slide",
+        "label": "Monolith Slide"
       },
       {
-        "value": "SUSEMono",
-        "label": "SUSE Mono"
+        "value": "Film Dissolve",
+        "label": "Film Dissolve"
       }
     ]
   },
   {
-    "type": "separator"
+    "type": "dropdown",
+    "property": "wireframe.tab-loading.animation",
+    "label": "Tab loading animation",
+    "value": "string",
+    "defaultValue": "both",
+    "options": [
+      {
+        "value": "loadbar",
+        "label": "Loading Bar"
+      },
+      {
+        "value": "tab-bg-loading",
+        "label": "Tab Background Progress Bar"
+      },
+      {
+        "value": "both",
+        "label": "Both"
+      }
+    ]
   },
   {
-    "type": "string",
-    "property": "wireframe-font-size",
-    "processAs": "root",
-    "label": "Change font size for tabs",
-    "defaultValue": "",
-    "placeholder": "12px"
+    "type": "checkbox",
+    "property": "wireframe.tab-hover.animation",
+    "label": "Tab hover animation",
+    "value": "boolean",
+    "defaultValue": true
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.trackpad.animation",
+    "label": "Trackpad back/forward animation",
+    "value": "boolean",
+    "defaultValue": true
   },
   {
     "type": "text",
-    "label": "Picture-in-Picture",
-    "margin": "30px 0 20px 0",
-    "size": "25px"
+    "label": "Media",
+    "margin": "26px 0 8px 0",
+    "size": "20px"
   },
   {
     "type": "separator"
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.player.minimal",
+    "label": "Media player: minimal (hide extra buttons)",
+    "value": "boolean",
+    "defaultValue": true
+  },
+  {
+    "type": "checkbox",
+    "property": "wireframe.player.flip",
+    "label": "Media player: flipped layout",
+    "value": "boolean",
+    "defaultValue": false
   },
   {
     "type": "checkbox",
     "property": "wireframe.pip.disabled",
-    "label": "Disable Picture-in-Picture customization",
+    "label": "Leave Picture-in-Picture untouched",
     "value": "boolean",
     "defaultValue": false
-  },
-  {
-    "type": "separator"
   },
   {
     "type": "checkbox",
     "property": "wireframe.pip.rounded",
-    "label": "Enable rounded corners for PiP window",
+    "label": "PiP: rounded window",
     "value": "boolean",
     "defaultValue": false
   },
   {
-    "type": "separator"
-  },
-  {
     "type": "dropdown",
     "property": "wireframe.pip.border_radius",
-    "label": "Border radius for PiP controls",
+    "label": "PiP: controls roundness",
     "value": "number",
     "defaultValue": 0,
     "options": [
@@ -1426,38 +1164,25 @@
     ]
   },
   {
-    "type": "separator"
-  },
-  {
     "type": "checkbox",
     "property": "wireframe.pip.blur",
-    "label": "Enable blur effect on PiP controls",
+    "label": "PiP: blurred controls",
     "value": "boolean",
     "defaultValue": false
   },
   {
     "type": "text",
-    "label": "Media Player",
-    "margin": "30px 0 20px 0",
-    "size": "25px"
+    "label": "Misc",
+    "margin": "26px 0 8px 0",
+    "size": "20px"
   },
   {
     "type": "separator"
   },
   {
     "type": "checkbox",
-    "property": "wireframe.player.minimal",
-    "label": "Make the Media Player window minimal (pip, volume, and call controls hidden)",
-    "value": "boolean",
-    "defaultValue": true
-  },
-  {
-    "type": "separator"
-  },
-  {
-    "type": "checkbox",
-    "property": "wireframe.player.flip",
-    "label": "Flipped media player",
+    "property": "wireframe.contextmenu",
+    "label": "Glass tint context menus",
     "value": "boolean",
     "defaultValue": false
   }

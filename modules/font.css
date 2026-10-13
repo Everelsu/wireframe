@@ -1,117 +1,96 @@
-:root {
-    --wireframe-font-size: unset;
-}
+/* === FONTS ===
+   Every option falls back to Onest for glyphs it lacks, so Cyrillic never
+   drops to a system serif (Bricolage / SUSE have Latin only). */
 
-/* Credits to Ferrocene */
-
-@media (-moz-pref("wireframe.font", "SF-Pro")) {
-    :root {
-        --wireframe-font: "SF-Pro";
-    }
-}
-
-@media (-moz-pref("wireframe.font", "SUSE")) {
-    :root {
-        --wireframe-font: "SUSE";
-    }
-}
-
-@media (-moz-pref("wireframe.font", "SUSEMono")) {
-    :root {
-        --wireframe-font: "SUSEMono";
-    }
-    
-    #titlebar .zen-current-workspace-indicator > label{
-        padding-top: 2px !important;
-    }
-}
-
-@media (-moz-pref("wireframe.font", "Bricolage")) {
-    :root {
-        --wireframe-font: "Bricolage";
-    }
-}
-
-@media (-moz-pref("wireframe.font", "GeistMono")) {
-    :root {
-        --wireframe-font: "GeistMono";
-    }
-    
-    #titlebar .zen-current-workspace-indicator > label{
-        padding-top: 2px !important;
-    }
-}
-
-@media (-moz-pref("wireframe.font", "JetBrainsMono")) {
-    :root {
-        --wireframe-font: "JetBrainsMono";
-    }
-    
-    #titlebar .zen-current-workspace-indicator > label{
-        padding-top: 2px !important;
-    }
-}
-
-@media (-moz-pref("wireframe.font", "Monocraft")) {
-    :root {
-        --wireframe-font: "Monocraft";
-    }
+@font-face {
+    font-family: "Onest";
+    src: url("../fonts/Onest.ttf");
+    font-weight: 100 900;
 }
 
 @font-face {
     font-family: "SF-Pro";
     src: url("../fonts/SF-Pro.ttf");
-    font-weight: var(--wireframe-font_weight) !important;
 }
 
 @font-face {
     font-family: "SUSE";
     src: url("../fonts/SUSE-Regular.ttf");
-    font-weight: var(--wireframe-font_weight) !important;
-    font-style: normal;
 }
 
 @font-face {
     font-family: "SUSEMono";
     src: url("../fonts/SUSEMono-Regular.ttf");
-    font-weight: var(--wireframe-font_weight) !important;
-    font-style: normal;
 }
 
 @font-face {
     font-family: "Bricolage";
     src: url("../fonts/BricolageGrotesque-Regular.ttf");
-    font-weight: var(--wireframe-font_weight) !important;
-    font-style: normal;
 }
 
 @font-face {
     font-family: "GeistMono";
     src: url("../fonts/GeistMono-Regular.ttf");
-    font-weight: var(--wireframe-font_weight) !important;
-    font-style: normal;
 }
 
 @font-face {
     font-family: "JetBrainsMono";
     src: url("../fonts/JetBrainsMono-Regular.ttf");
-    font-weight: var(--wireframe-font_weight) !important;
-    font-style: normal;
 }
 
 @font-face {
     font-family: "Monocraft";
     src: url("../fonts/Monocraft.ttf");
-    font-weight: var(--wireframe-font_weight) !important;
-    font-style: normal;
+}
+
+/* default (also when the pref is unset / "") */
+:root {
+    --wireframe-font-size: unset;
+    --wireframe-font: "Onest", system-ui, sans-serif;
+}
+
+@media (-moz-pref("wireframe.font", "SF-Pro")) {
+    :root { --wireframe-font: "SF-Pro", "Onest", system-ui, sans-serif; }
+}
+
+@media (-moz-pref("wireframe.font", "SUSE")) {
+    :root { --wireframe-font: "SUSE", "Onest", system-ui, sans-serif; }
+}
+
+@media (-moz-pref("wireframe.font", "Bricolage")) {
+    :root { --wireframe-font: "Bricolage", "Onest", system-ui, sans-serif; }
+}
+
+@media (-moz-pref("wireframe.font", "Monocraft")) {
+    :root { --wireframe-font: "Monocraft", "JetBrainsMono", monospace; }
+}
+
+@media (-moz-pref("wireframe.font", "SUSEMono")) {
+    :root { --wireframe-font: "SUSEMono", "JetBrainsMono", monospace; }
+}
+
+@media (-moz-pref("wireframe.font", "GeistMono")) {
+    :root { --wireframe-font: "GeistMono", "JetBrainsMono", monospace; }
+}
+
+@media (-moz-pref("wireframe.font", "JetBrainsMono")) {
+    :root { --wireframe-font: "JetBrainsMono", monospace; }
+}
+
+/* mono fonts sit a bit high in the workspace label */
+@media (-moz-pref("wireframe.font", "SUSEMono")),
+       (-moz-pref("wireframe.font", "GeistMono")),
+       (-moz-pref("wireframe.font", "JetBrainsMono")) {
+    #titlebar .zen-current-workspace-indicator > label {
+        padding-top: 2px !important;
+    }
 }
 
 * {
-    font-weight: var(--wireframe-font_weight) !important;
     font-family: var(--wireframe-font);
 }
 
 .tab-text,
-.tab-group-label{
+.tab-group-label {
     font-size: var(--wireframe-font-size) !important;
 }

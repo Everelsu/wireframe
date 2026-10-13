@@ -120,3 +120,28 @@
   }
 }
 
+
+/* === TRANSPARENCY ===
+   The window lets the desktop show through: Acrylic/Mica on Windows,
+   vibrancy on macOS. Only Zen's full-window background layer fades, so
+   space gradients still work (just see-through) and space switching keeps
+   its own crossfade. pref wireframe.transparency: glass | clear | off */
+:root {
+  --wf-bg-alpha: 0.35;
+}
+
+@media (-moz-pref("wireframe.transparency", "clear")) {
+  :root { --wf-bg-alpha: 0; }
+}
+
+@media not (-moz-pref("wireframe.transparency", "off")) {
+  :root,
+  #main-window,
+  #zen-main-app-wrapper {
+    background: transparent !important;
+  }
+
+  #zen-browser-background {
+    opacity: var(--wf-bg-alpha) !important;
+  }
+}

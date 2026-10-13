@@ -48,7 +48,7 @@ body > hbox {
         content: "";
         position: absolute;
         inset: 0;
-        border: 2px solid var(--na-color-border);
+        border: 1.5px solid var(--na-color-border);
         pointer-events: none;
         z-index: 9999;
     }
@@ -57,7 +57,7 @@ body > hbox {
         content: "";
         position: absolute;
         inset: 0;
-        border: 2px solid var(--na-color-border);
+        border: 1.5px solid var(--na-color-border);
         border-radius: var(--na-window-border-radius) !important;
         corner-shape: var(--wf-shape-window) !important;
         pointer-events: none;
@@ -171,39 +171,10 @@ body > hbox {
     border-radius: 0 !important;
 }
 
-/* ====== WEBVIEW BORDER ====== */
-@media not (-moz-pref("wireframe.webview.border")){
-    /* content window border size on RIGHT side tabbar */
-    :root[zen-right-side="true"]:not([zen-compact-mode="true"]):not(
-            [inDOMFullscreen="true"]
-        )
-        #zen-tabbox-wrapper {
-        border: 0.1px solid transparent !important;
-    }
-
-    /* content window border size on LEFT side tabbar */
-    :root:not([zen-right-side="true"]):not([zen-compact-mode="true"]):not(
-            [inDOMFullscreen="true"]
-        )
-        #zen-tabbox-wrapper {
-        border: 0.1px solid transparent !important;
-    }
-}
-
-@media (-moz-pref("wireframe.webview.border", "wireframe")){
-    /* content window border size on RIGHT side tabbar */
-    :root[zen-right-side="true"]:not([zen-compact-mode="true"]):not(
-            [inDOMFullscreen="true"]
-        )
-        #zen-tabbox-wrapper {
-        border: 2px solid var(--na-color-border) !important;
-    }
-
-    /* content window border size on LEFT side tabbar */
-    :root:not([zen-right-side="true"]):not([zen-compact-mode="true"]):not(
-            [inDOMFullscreen="true"]
-        )
-        #zen-tabbox-wrapper {
+/* ====== WEBVIEW BORDER ======
+   Same frame in normal and compact mode (compact used to lose it). */
+@media (-moz-pref("wireframe.webview.border", "wireframe")) {
+    :root:not([inDOMFullscreen="true"]) #zen-tabbox-wrapper {
         border: 2px solid var(--na-color-border) !important;
     }
 }

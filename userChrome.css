@@ -14,8 +14,8 @@
 @import url("modules/font.css");
 @import url("modules/media.css");
 @import url("modules/blank-page.css");
-@import url("modules/floating-urlbar.css");
-@import url("modules/normal-urlbar.css");
+@import url("modules/urlbar.css");
 @import url("modules/pinned-extensions.css");
 @import url("modules/browser.css");
 @import url("modules/library.css");
+@import url("modules/settings-panel.css");
