@@ -135,8 +135,9 @@
 }
 
 @media not (-moz-pref("wireframe.transparency", "off")) {
-  :root,
-  #main-window,
+  /* only the browser window: userChrome also styles dialogs and other
+     chrome documents, which must keep their own background */
+  :root[windowtype="navigator:browser"],
   #zen-main-app-wrapper {
     background: transparent !important;
   }

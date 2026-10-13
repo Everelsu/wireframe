@@ -89,7 +89,7 @@
   --wf-win: var(--zen-main-browser-background-toolbar, var(--na-color-bg));
   --wf-surf-top: color-mix(in srgb, var(--wf-win) 90%, var(--na-color-border) 10%);
   --wf-surf: var(--wf-win);
-  --wf-surf-edge: color-mix(in srgb, var(--wf-win) 82%, transparent);
+  --wf-surf-edge: var(--wf-win);
   --wf-foot: calc(var(--zen-element-separation, 8px) - var(--wf-ring));
   /* docked bar, relative to the surface's bottom-left corner */
   --wf-dock-x: calc(6px - var(--wf-urlbar-left));
@@ -186,16 +186,20 @@
     }
   }
 
-  /* the foot: same surface, from the frame line down to the window frame */
+  /* the base: the window strip under the page (below its frame line) takes
+     the panel's color while it is open, across the page's whole width. So
+     below the fillets there is the same surface as the panel: no edge where
+     the panel side used to continue down to the window frame. Its ends fade
+     out softly under the page's own corners. */
   &::after {
     content: "";
     position: absolute;
-    left: 0;
-    right: 0;
+    left: calc(var(--wf-sidebar-w) - var(--wf-urlbar-left));
+    right: calc(var(--wf-urlbar-left) + var(--wf-urlbar-w) - 100vw);
     bottom: 0;
-    height: calc(var(--wf-foot) + 2px);
-    /* dissolves into the window instead of ending on a hard edge */
-    background: linear-gradient(to bottom, var(--wf-surf-edge), transparent);
+    height: var(--wf-foot);
+    background: var(--wf-surf-edge);
+    mask-image: linear-gradient(to right, transparent, #000 64px, #000 calc(100% - 64px), transparent);
     pointer-events: none;
   }
 }
@@ -241,7 +245,7 @@
     }
 
     &::after {
-      animation: wf-fade-in 0.2s ease 0.3s backwards !important;
+      animation: wf-fade-in 0.3s ease 0.1s backwards !important;
     }
 
     & > .urlbar-input-container {
@@ -259,10 +263,22 @@
         animation: wf-ub-grow-frame 0.6s linear !important;
         &::before, &::after { animation-delay: 0.12s !important; }
       }
-      &::after { animation: none !important; }
+      &::after { animation-delay: 0s !important; }
       & > .urlbar-input-container { animation-name: wf-ub-input-rise !important; }
       & .urlbarView { animation-delay: 0.3s !important; }
     }
+  }
+
+  /* Ctrl+T (new empty tab): a point on the frame line opens into a line
+     across the panel's width, the line rises into the input bar, then the
+     panel grows. The empty tab's logo steps up to make room. */
+  :root[zen-single-toolbar="true"] #urlbar[breakout-extend][zen-newtab] {
+    & > .urlbar-background {
+      animation: wf-ub-grow-line 0.72s linear !important;
+      &::before, &::after { animation: wf-fade-in 0.2s ease 0.18s backwards !important; }
+    }
+    & > .urlbar-input-container { animation: wf-ub-input-rise 0.4s var(--wf-ease-out) 0.2s backwards !important; }
+    & .urlbarView { animation: wf-ub-results 0.42s var(--wf-ease-out) 0.38s backwards !important; }
   }
 
   /* compact */
@@ -339,6 +355,29 @@
   }
 }
 
+
+/* surface: a point on the frame line -> a line -> the input bar -> panel */
+@keyframes wf-ub-grow-line {
+  from {
+    --wf-bt: calc(100% - var(--wf-foot) - 2px);
+    --wf-bl: 50%;
+    --wf-br: 50%;
+    --wf-rt: 1px;
+    animation-timing-function: cubic-bezier(0.3, 0, 0.2, 1);
+  }
+  28% {
+    --wf-bt: calc(100% - var(--wf-foot) - 2px);
+    --wf-bl: 0px;
+    --wf-br: 0px;
+    --wf-rt: 1px;
+    animation-timing-function: cubic-bezier(0.3, 0, 0.2, 1);
+  }
+  52% {
+    --wf-bt: calc(100% - var(--wf-foot) - var(--urlbar-height, 38px) - 14px);
+    --wf-rt: var(--na-urlbar-border-radius);
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
 
 /* surface: from a pill at the bottom center, wide first, then tall */
 @keyframes wf-ub-grow-center {
@@ -548,3 +587,13 @@
   }
 }
 
+
+/* empty tab: the logo steps up to make room while the bar is open */
+#main-window[zen-has-empty-tab="true"] .deck-selected .browserStack::before {
+  transition: opacity 0.25s ease, filter 0.25s ease, translate 0.55s var(--wf-ease, ease), scale 0.55s var(--wf-ease, ease) !important;
+}
+
+#main-window[zen-has-empty-tab="true"]:has(#urlbar[breakout-extend]:not([wf-closing])) .deck-selected .browserStack::before {
+  translate: 0 -36px;
+  scale: 0.9;
+}
