@@ -35,7 +35,6 @@
       default: return p.defaultValue ?? (p.type === "checkbox" ? false : "");
     }
   };
-  let refresh = () => {};
   const write = (p, v) => {
     if (p.type === "checkbox") Services.prefs.setBoolPref(p.property, !!v);
     else if (p.value === "number") Services.prefs.setIntPref(p.property, Number(v));
@@ -44,7 +43,6 @@
     if (p.type === "string") {
       document.documentElement.style.setProperty("--" + p.property.replaceAll(".", "-"), v);
     }
-    refresh();
   };
 
   // Sine's "conditions" format: a setting that does nothing in the current
@@ -122,7 +120,8 @@
     }
     if (p.type === "dropdown") {
       const opts = p.options ?? [];
-      if (opts.length <= 4) {
+      // short choices as buttons; long labels would run off the panel
+      if (opts.length <= 4 && opts.reduce((n, o) => n + o.label.length, 0) <= 30) {
         const seg = h("div", { class: "wf-seg" });
         for (const o of opts) {
           seg.append(h("button", {
@@ -149,6 +148,8 @@
 
   // ---------- panel ----------
   let panel = null;
+  // settings marked "restart" that changed while Zen is running
+  const pendingRestart = new Set();
 
   async function build() {
     const prefs = await (await fetch(BASE + "preferences.json")).json();
@@ -165,58 +166,114 @@
 
     const nav = h("nav", { class: "wf-nav" });
     const body = h("div", { class: "wf-body" });
-    const select = (i) => {
-      for (const [j, b] of [...nav.children].entries()) b.setAttribute("aria-current", String(i === j));
-      body.replaceChildren(
-        h("h2", {}, sections[i].title),
-        ...sections[i].items.map((p) => {
-          const blocked = blockedBy(p);
-          return h("div", {
-            class: "wf-row",
-            "data-blocked": blocked ? "" : null,
-            inert: blocked ? "" : null,
-            onmouseenter: () => showTarget(p.property),
-            onmouseleave: hideTarget,
-            onfocusin: () => showTarget(p.property),
-          },
-          h("label", { title: p.property }, p.label,
-            p.restart ? h("small", {}, " · restart") : null,
-            blocked ? h("small", { class: "wf-why" }, blocked) : null),
-          control(p));
-        }),
-        h("button", {
-          class: "wf-reset",
-          onclick: () => {
-            for (const p of sections[i].items) {
-              if (Services.prefs.prefHasUserValue(p.property)) Services.prefs.clearUserPref(p.property);
-              if (p.defaultValue !== undefined && !p.property.startsWith("zen.")) write(p, p.defaultValue);
-            }
-            select(i);
-          },
-        }, "Reset this section"),
-      );
-      body.scrollTop = 0;
+    const search = h("input", {
+      class: "wf-search", type: "search", placeholder: "Find a setting…",
+      oninput: () => render(true),
+    });
+    const banner = h("div", { class: "wf-restart", hidden: true },
+      h("span", {}),
+      h("button", {
+        onclick: () => Services.startup.quit(Ci.nsIAppStartup.eAttemptQuit | Ci.nsIAppStartup.eRestart),
+      }, "Restart Zen"));
+    let current = 0;
+
+    const row = (p) => {
+      const blocked = blockedBy(p);
+      return h("div", {
+        class: "wf-row",
+        "data-blocked": blocked ? "" : null,
+        inert: blocked ? "" : null,
+        onmouseenter: () => showTarget(p.property),
+        onmouseleave: hideTarget,
+        onfocusin: () => showTarget(p.property),
+      },
+      h("label", { title: p.property }, p.label,
+        p.restart ? h("small", {}, " · restart") : null,
+        blocked ? h("small", { class: "wf-why" }, blocked) : null),
+      control(p));
     };
-    sections.forEach((s, i) => nav.append(h("button", { onclick: () => select(i) }, s.title)));
-    // only rows whose lock state changed are rebuilt, so focus and scroll stay
-    refresh = () => {
-      for (const row of body.querySelectorAll(".wf-row")) {
-        const p = prefs.find((x) => x.property === row.querySelector("label")?.title);
-        if (p?.conditions && !!blockedBy(p) !== row.hasAttribute("data-blocked")) {
-          const top = body.scrollTop;
-          select([...nav.children].findIndex((b) => b.getAttribute("aria-current") === "true"));
-          body.scrollTop = top;
-          return;
-        }
+
+    // animate: rows come in one after another (section switch, search);
+    // a plain refresh after a change keeps them still
+    const render = (animate) => {
+      const top = body.scrollTop;
+      const q = search.value.trim().toLowerCase();
+      for (const [j, b] of [...nav.children].entries()) {
+        b.setAttribute("aria-current", String(!q && current === j));
       }
+      if (q) {
+        const hits = sections.flatMap((sec) => sec.items
+          .filter((p) => `${p.label} ${p.property} ${sec.title}`.toLowerCase().includes(q))
+          .map((p) => [sec, p]));
+        const kids = [h("h2", {}, hits.length ? `Results for "${search.value.trim()}"` : "Nothing found")];
+        let last = null;
+        for (const [sec, p] of hits) {
+          if (sec !== last) kids.push(h("div", { class: "wf-group" }, sec.title));
+          last = sec;
+          kids.push(row(p));
+        }
+        body.replaceChildren(...kids);
+      } else {
+        const sec = sections[current];
+        body.replaceChildren(
+          h("h2", {}, sec.title),
+          ...sec.items.map(row),
+          h("button", {
+            class: "wf-reset",
+            onclick: () => {
+              for (const p of sec.items) {
+                if (Services.prefs.prefHasUserValue(p.property)) Services.prefs.clearUserPref(p.property);
+                if (p.defaultValue !== undefined && !p.property.startsWith("zen.") && !p.property.startsWith("widget.")) {
+                  write(p, p.defaultValue);
+                }
+              }
+              render(true);
+            },
+          }, "Reset this section"),
+        );
+      }
+      [...body.querySelectorAll(".wf-row, .wf-group")].forEach((el, k) => el.style.setProperty("--wf-i", Math.min(k, 12)));
+      body.toggleAttribute("data-enter", !!animate);
+      body.scrollTop = animate ? 0 : top;
     };
+    const select = (i) => {
+      current = i;
+      search.value = "";
+      render(true);
+    };
+    sections.forEach((sec, i) => nav.append(h("button", { onclick: () => select(i) }, sec.title)));
+
+    // keep the panel in step with the prefs, whoever changes them (Sine's
+    // settings page, about:config); one re-render per frame at most
+    let queued = false;
+    const onPref = (_s, _t, name) => {
+      const p = prefs.find((x) => x.property === name);
+      if (p?.restart) {
+        pendingRestart.add(p.label);
+        banner.firstChild.textContent = `Restart to apply: ${[...pendingRestart].join(", ")}`;
+        banner.hidden = false;
+      }
+      if (queued || panel.hidden) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        // a text field being typed in would lose its caret
+        if (!body.contains(document.activeElement) || document.activeElement.type !== "text") render(false);
+      });
+    };
+    const watched = new Set(prefs.flatMap((p) => [p.property, ...(p.conditions ?? []).map((c) => (c.if || c.not).property)]).filter(Boolean));
+    for (const name of watched) Services.prefs.addObserver(name, onPref);
+    window.addEventListener("unload", () => {
+      for (const name of watched) Services.prefs.removeObserver(name, onPref);
+    }, { once: true });
 
     panel = h("div", { id: "wf-settings", hidden: true, role: "dialog", "aria-label": "Wireframe settings" },
       h("header", {},
         h("strong", {}, "Wireframe"),
-        h("span", {}, "changes apply live · hover a setting to see what it touches"),
+        search,
         h("button", { class: "wf-close", title: "Close", onclick: close }, "✕")),
-      h("div", { class: "wf-main" }, nav, body));
+      h("div", { class: "wf-main" }, nav, body),
+      banner);
     document.body.append(panel, ring);
     select(0);
   }
@@ -254,6 +311,27 @@
   // the main view is built lazily on first open
   document.getElementById("appMenu-popup")?.addEventListener("popupshowing", addMenuItem);
   addMenuItem();
+
+  // ---------- transparency ----------
+  // On Windows the window only turns see-through when Firefox draws Mica
+  // behind the whole of it, which widget.windows.mica switches on (read at
+  // startup). Follow the transparency setting with it; switching it back
+  // off only undoes what this did, never a value the user set themselves.
+  const syncMica = () => {
+    if (AppConstants.platform !== "win") return;
+    const want = Services.prefs.getStringPref("wireframe.transparency", "off") !== "off";
+    const byUs = Services.prefs.getBoolPref("wireframe.transparency.mica-by-theme", false);
+    const mica = Services.prefs.getBoolPref("widget.windows.mica", false);
+    if (want && !mica) {
+      Services.prefs.setBoolPref("widget.windows.mica", true);
+      Services.prefs.setBoolPref("wireframe.transparency.mica-by-theme", true);
+    } else if (!want && byUs) {
+      Services.prefs.clearUserPref("widget.windows.mica");
+      Services.prefs.clearUserPref("wireframe.transparency.mica-by-theme");
+    }
+  };
+  syncMica();
+  Services.prefs.addObserver("wireframe.transparency", syncMica);
 
   // ---------- split by dragging a tab onto a tab ----------
   // Zen splits when a dragged tab rests on another tab, but only within
@@ -293,7 +371,12 @@
   const urlbar = document.getElementById("urlbar");
   if (urlbar && matchMedia("(prefers-reduced-motion: no-preference)").matches) {
     // how long each way back takes (longest transition + fade in urlbar.css)
-    const HOLD = { dock: 350, frame: 330, line: 370, center: 320 };
+    const HOLD = { dock: 350, frame: 330, line: 370, center: 320, fade: 150 };
+    // pref wireframe.urlbar.motion: morph (default) | fade | off
+    const motion = () => {
+      if (Services.prefs.getStringPref("wireframe.motion", "") === "off") return "off";
+      return Services.prefs.getStringPref("wireframe.urlbar.motion", "morph");
+    };
     const root = document.documentElement;
     const view = gURLBar.view;
     const viewClose = view.close.bind(view);
@@ -368,9 +451,13 @@
         urlbar.removeAttribute("wf-enter");
         return;
       }
-      let o = origin();
+      let o = motion() === "fade" ? "fade" : origin();
       if (o === "dock" && !onScreen(from)) o = compact() ? "center" : "frame";
       urlbar.setAttribute("wf-origin", o);
+      if (o === "fade") {
+        urlbar.removeAttribute("wf-enter");
+        return;
+      }
       if (o === "dock") setDock(from);
       urlbar.setAttribute("wf-enter", o);
       getComputedStyle(surface).getPropertyValue("--wf-bt");
@@ -409,10 +496,11 @@
     const begin = () => {
       if (replaying) return false;
       if (closing) return true;
+      if (motion() === "off") return false;
       if (root.getAttribute("zen-single-toolbar") !== "true" || !urlbar.hasAttribute("breakout-extend")) {
         return false;
       }
-      let o = urlbar.getAttribute("wf-origin") || origin();
+      let o = urlbar.getAttribute("wf-origin") || (motion() === "fade" ? "fade" : origin());
       if (o === "dock") {
         // back into the sidebar, if it is still there to land in
         const d = dockRect();
@@ -481,7 +569,7 @@
           clearTimeout(closing.timer);
           finish();
         }
-        if (force === true && !this.hasAttribute(name)) {
+        if (force === true && !this.hasAttribute(name) && motion() !== "off") {
           // where the docked bar is (Firefox may already have moved the bar
           // itself into the top layer by now, its slot stays put)
           const from = dockRect();

@@ -123,10 +123,13 @@
 
 /* === TRANSPARENCY ===
    pref wireframe.transparency: off (default) | glass | clear.
-   On Windows, Zen only gets the Mica/Acrylic backdrop in the title strip;
-   below it the "transparent" window is a flat grey, which drew a visible
-   line under the strip. So it is opt-in. Only Zen's full-window background
-   layer fades, so space gradients and their crossfade keep working. */
+   A see-through window needs the system to draw behind all of it: Mica on
+   Windows (widget.windows.mica, which wireframe.uc.js turns on with this
+   setting; it takes a restart), always on macOS, an opt-in on Linux.
+   Without that backdrop a transparent window is just flat grey, so nothing
+   here applies until it's there. Only Zen's full-window background layer
+   fades, so space gradients and their crossfade keep working; glass keeps
+   a tint of them, clear shows the backdrop as is. */
 :root {
   --wf-bg-alpha: 0.35;
 }
@@ -136,14 +139,16 @@
 }
 
 @media (-moz-pref("wireframe.transparency", "glass")), (-moz-pref("wireframe.transparency", "clear")) {
-  /* only the browser window: userChrome also styles dialogs and other
-     chrome documents, which must keep their own background */
-  :root[windowtype="navigator:browser"],
-  #zen-main-app-wrapper {
-    background: transparent !important;
-  }
+  @media (-moz-windows-mica) or (-moz-platform: macos) or ((-moz-platform: linux) and -moz-pref("zen.widget.linux.transparency")) {
+    /* only the browser window: userChrome also styles dialogs and other
+       chrome documents, which must keep their own background */
+    :root[windowtype="navigator:browser"],
+    #zen-main-app-wrapper {
+      background: transparent !important;
+    }
 
-  #zen-browser-background {
-    opacity: var(--wf-bg-alpha) !important;
+    #zen-browser-background {
+      opacity: var(--wf-bg-alpha) !important;
+    }
   }
 }

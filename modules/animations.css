@@ -161,14 +161,14 @@
    fades and scales the page behind it). Split view and Glance move their
    panes themselves, so they're left alone. */
 @media (prefers-reduced-motion: no-preference) {
-  @media not (-moz-pref("wireframe.tab-switch.animation", "none")) {
+  @media not ((-moz-pref("wireframe.tab-switch.animation", "none")) or (-moz-pref("wireframe.motion", "off"))) {
     #tabbrowser-tabpanels:not([zen-split-view="true"]) > .browserSidebarContainer.deck-selected:not(.zen-glance-overlay, .zen-glance-background) {
       animation: wf-tab-in var(--wf-tab-dur, 0.3s) var(--wf-tab-ease, var(--wf-ease, ease));
     }
   }
 
   @media (-moz-pref("wireframe.tab-switch.animation", "Vertical Veil")) {
-    :root { --wf-tab-y: 12px; --wf-tab-dur: 0.32s; }
+    :root { --wf-tab-y: 12px; --wf-tab-scale: 0.985; --wf-tab-filter: blur(4px); --wf-tab-dur: 0.4s; }
   }
   @media (-moz-pref("wireframe.tab-switch.animation", "Clean Sever")) {
     :root { --wf-tab-x: 32px; --wf-tab-scale: 1.04; --wf-tab-filter: contrast(140%) saturate(0%); --wf-tab-dur: 0.22s; --wf-tab-ease: cubic-bezier(0.7, 0, 0.3, 1); }
@@ -190,11 +190,12 @@
   }
 }
 
+/* distances and scale grow with the motion pref (--wf-m) */
 @keyframes wf-tab-in {
   from {
     opacity: var(--wf-tab-from, 0);
-    translate: var(--wf-tab-x, 0px) var(--wf-tab-y, 0px);
-    scale: var(--wf-tab-scale, 1);
+    translate: calc(var(--wf-tab-x, 0px) * var(--wf-m, 1)) calc(var(--wf-tab-y, 0px) * var(--wf-m, 1));
+    scale: calc(1 + (var(--wf-tab-scale, 1) - 1) * var(--wf-m, 1));
     filter: var(--wf-tab-filter, none);
   }
 }

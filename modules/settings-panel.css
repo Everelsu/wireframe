@@ -10,8 +10,9 @@
   display: flex;
   flex-direction: column;
   color: var(--toolbox-textcolor);
-  background: color-mix(in srgb, var(--na-color-bg) 84%, transparent);
-  backdrop-filter: blur(24px) saturate(1.2);
+  /* solid: a see-through panel showed whatever page sat behind it as a
+     smudge under the settings */
+  background: var(--zen-main-browser-background-toolbar, var(--na-color-bg));
   border: 2px solid var(--na-color-border);
   border-radius: var(--na-user-border-radius);
   corner-shape: var(--wf-shape-panel) !important;
@@ -20,12 +21,18 @@
   -moz-window-dragging: no-drag;
 
   opacity: 0;
-  translate: 24px 0;
-  transition: opacity 0.2s ease, translate 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  translate: 32px 0;
+  scale: 0.97;
+  transform-origin: 100% 50%;
+  transition:
+    opacity 0.22s var(--wf-ease, ease),
+    translate 0.42s var(--wf-spring, cubic-bezier(0.34, 1.4, 0.64, 1)),
+    scale 0.42s var(--wf-spring, cubic-bezier(0.34, 1.4, 0.64, 1));
 
   &[open] {
     opacity: 1;
     translate: 0 0;
+    scale: 1;
   }
 
   &[hidden] {
@@ -51,10 +58,64 @@
       font-weight: 600;
     }
 
-    & span {
-      opacity: 0.5;
-      font-size: 11.5px;
+    & .wf-search {
       flex: 1;
+      min-width: 0;
+      padding: 5px 10px;
+      background: transparent;
+      border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+      border-radius: var(--na-tab-border-radius);
+      outline: none;
+      transition: border-color 0.2s var(--wf-ease, ease);
+
+      &:focus {
+        border-color: var(--na-color-border);
+      }
+    }
+  }
+
+  /* section name above search results */
+  & .wf-group {
+    margin: 14px 0 2px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.45;
+  }
+
+  /* rows arrive one after another when a section opens */
+  & .wf-body[data-enter] :is(.wf-row, .wf-group, h2, .wf-reset) {
+    animation: wf-row-in 0.36s var(--wf-ease, ease) backwards;
+    animation-delay: calc(var(--wf-i, 0) * 18ms);
+  }
+
+  /* a setting that only applies after a restart was changed */
+  & .wf-restart {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 18px;
+    border-top: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+    background: color-mix(in srgb, var(--na-color-border) 10%, transparent);
+    animation: wf-row-in 0.3s var(--wf-ease, ease);
+
+    &[hidden] {
+      display: none;
+    }
+
+    & span {
+      flex: 1;
+      opacity: 0.8;
+    }
+
+    & button {
+      appearance: none;
+      padding: 5px 12px;
+      border: 0;
+      border-radius: var(--na-tab-border-radius);
+      background: var(--na-color-border);
+      color: var(--na-color-bg);
+      cursor: pointer;
     }
   }
 
@@ -293,5 +354,12 @@
     color: var(--na-color-bg);
     background: var(--na-color-border);
     border-radius: 6px;
+  }
+}
+
+@keyframes wf-row-in {
+  from {
+    opacity: 0;
+    translate: 0 6px;
   }
 }

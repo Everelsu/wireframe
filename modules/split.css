@@ -9,17 +9,46 @@
   border-color: transparent !important;
 }
 
+/* Each pane's frame is drawn on a layer inside the pane, over the page:
+   an outline outside it got cut off wherever the pane touches the edge of
+   the window or the page area (compact mode, no gaps, the top pane). The
+   layer takes the pane's own corners, whatever mode sets them. */
 #tabbrowser-tabpanels[zen-split-view="true"] > .browserSidebarContainer[is-zen-split="true"] {
-  outline: 2px solid color-mix(in srgb, var(--na-color-border) 30%, transparent) !important;
-  /* drawn in the gap: inside, the page itself would paint over it */
-  outline-offset: 0 !important;
+  outline: none !important;
   border-radius: var(--na-user-border-radius) !important;
   corner-shape: var(--wf-shape-panel) !important;
-  transition: outline-color 0.25s var(--wf-ease, ease) !important;
 
-  &.deck-selected {
-    outline-color: var(--na-color-border) !important;
+  & > .browserContainer {
+    border-radius: inherit;
+    corner-shape: inherit;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      pointer-events: none;
+      border: 1.5px solid color-mix(in srgb, var(--na-color-border) 28%, transparent);
+      border-radius: inherit;
+      corner-shape: inherit;
+      transition: border-color 0.3s var(--wf-ease, ease), border-width 0.3s var(--wf-ease, ease);
+    }
   }
+
+  &.deck-selected > .browserContainer::after {
+    border: 2px solid var(--na-color-border);
+  }
+}
+
+/* compact mode is edge to edge, but split panes stay cards: otherwise
+   nothing would show which one you're in */
+:root[zen-compact-mode="true"] #tabbrowser-tabpanels[zen-split-view="true"] > .browserSidebarContainer[is-zen-split="true"] {
+  border-radius: var(--na-user-border-radius) !important;
+}
+
+/* ...held a little off the window's edges, so their frames show whole */
+:root[zen-compact-mode="true"]:not([inDOMFullscreen="true"]) #zen-tabbox-wrapper:has(> #tabbrowser-tabbox[zen-split-view="true"]) {
+  padding: 6px 6px 6px 6px !important;
 }
 
 /* sidebar: the split pair as one linked block */

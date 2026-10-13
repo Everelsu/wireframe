@@ -633,7 +633,7 @@ body > hbox {
   transition: opacity 0.3s var(--wf-ease, ease) !important;
 }
 
-@media (-moz-pref("wireframe.trackpad.animation")) {
+@media (-moz-pref("wireframe.trackpad.animation")) and (not (-moz-pref("wireframe.motion", "off"))) {
   @media (prefers-reduced-motion: no-preference) {
     .browserStack > browser {
       transition: translate 0.42s var(--wf-ease, ease), scale 0.42s var(--wf-ease, ease), border-radius 0.42s var(--wf-ease, ease);
@@ -649,11 +649,11 @@ body > hbox {
   }
 
   .browserStack:has(> #historySwipeAnimationContainer > #historySwipeAnimationPreviousArrow:not([collapsed="true"])) > browser {
-    --wf-swipe-x: 14px;
+    --wf-swipe-x: calc(10px * var(--wf-m, 1));
   }
 
   .browserStack:has(> #historySwipeAnimationContainer > #historySwipeAnimationNextArrow:not([collapsed="true"])) > browser {
-    --wf-swipe-x: -14px;
+    --wf-swipe-x: calc(-10px * var(--wf-m, 1));
   }
 
   /* committed: letting go will navigate */
@@ -662,10 +662,10 @@ body > hbox {
   }
 
   .browserStack:has(> #historySwipeAnimationContainer > #historySwipeAnimationPreviousArrow:not([collapsed="true"]) > svg.will-navigate) > browser {
-    --wf-swipe-x: 44px;
+    --wf-swipe-x: calc(30px * var(--wf-m, 1));
   }
 
   .browserStack:has(> #historySwipeAnimationContainer > #historySwipeAnimationNextArrow:not([collapsed="true"]) > svg.will-navigate) > browser {
-    --wf-swipe-x: -44px;
+    --wf-swipe-x: calc(-30px * var(--wf-m, 1));
   }
 }

@@ -72,7 +72,7 @@
   {
     "type": "dropdown",
     "property": "wireframe.transparency",
-    "label": "Window transparency (Windows shows it only in the title strip)",
+    "label": "Window transparency",
     "value": "string",
     "defaultValue": "off",
     "options": [
@@ -93,7 +93,7 @@
   {
     "type": "dropdown",
     "property": "widget.windows.mica.toplevel-backdrop",
-    "label": "Windows: what shows through (restart)",
+    "label": "Windows: what shows through",
     "value": "number",
     "defaultValue": 1,
     "restart": true,
@@ -109,6 +109,14 @@
       {
         "value": 3,
         "label": "Mica Alt - wallpaper, deeper tint"
+      }
+    ],
+    "conditions": [
+      {
+        "not": {
+          "property": "wireframe.transparency",
+          "value": "off"
+        }
       }
     ]
   },
@@ -428,7 +436,7 @@
   {
     "type": "checkbox",
     "property": "zen.view.experimental-force-window-controls-left",
-    "label": "macOS: place controls on the left (restart)",
+    "label": "macOS: place controls on the left",
     "value": "boolean",
     "defaultValue": false,
     "restart": true,
@@ -1148,6 +1156,35 @@
     ]
   },
   {
+    "type": "dropdown",
+    "property": "wireframe.urlbar.motion",
+    "label": "URL bar animation",
+    "value": "string",
+    "defaultValue": "morph",
+    "options": [
+      {
+        "value": "morph",
+        "label": "Morph"
+      },
+      {
+        "value": "fade",
+        "label": "Fade"
+      },
+      {
+        "value": "off",
+        "label": "Off"
+      }
+    ],
+    "conditions": [
+      {
+        "not": {
+          "property": "wireframe.motion",
+          "value": "off"
+        }
+      }
+    ]
+  },
+  {
     "type": "checkbox",
     "property": "wireframe.urlbar.dim",
     "label": "Dim the page while the URL bar is open",
@@ -1169,6 +1206,31 @@
   },
   {
     "type": "separator"
+  },
+  {
+    "type": "dropdown",
+    "property": "wireframe.motion",
+    "label": "Motion",
+    "value": "string",
+    "defaultValue": "lively",
+    "options": [
+      {
+        "value": "lively",
+        "label": "Lively"
+      },
+      {
+        "value": "normal",
+        "label": "Normal"
+      },
+      {
+        "value": "calm",
+        "label": "Calm"
+      },
+      {
+        "value": "off",
+        "label": "Off"
+      }
+    ]
   },
   {
     "type": "dropdown",
@@ -1209,6 +1271,14 @@
         "label": "None",
         "value": "none"
       }
+    ],
+    "conditions": [
+      {
+        "not": {
+          "property": "wireframe.motion",
+          "value": "off"
+        }
+      }
     ]
   },
   {
@@ -1237,14 +1307,30 @@
     "property": "wireframe.tab-hover.animation",
     "label": "Tab hover animation",
     "value": "boolean",
-    "defaultValue": true
+    "defaultValue": true,
+    "conditions": [
+      {
+        "not": {
+          "property": "wireframe.motion",
+          "value": "off"
+        }
+      }
+    ]
   },
   {
     "type": "checkbox",
     "property": "wireframe.trackpad.animation",
     "label": "Trackpad back/forward animation",
     "value": "boolean",
-    "defaultValue": true
+    "defaultValue": true,
+    "conditions": [
+      {
+        "not": {
+          "property": "wireframe.motion",
+          "value": "off"
+        }
+      }
+    ]
   },
   {
     "type": "text",

@@ -4,6 +4,42 @@
    opacity and scale are transitioned. */
 :root {
   --wf-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --wf-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  /* pref wireframe.motion: how far things travel (lively is the default,
+     so it's what applies while the pref is unset) */
+  --wf-m: 1.6;
+}
+
+@media (-moz-pref("wireframe.motion", "normal")) {
+  :root { --wf-m: 1; }
+}
+
+@media (-moz-pref("wireframe.motion", "calm")) {
+  :root { --wf-m: 0.5; }
+}
+
+/* the tab you land on settles into place; essentials pop a little more */
+@media (prefers-reduced-motion: no-preference) {
+  @media not (-moz-pref("wireframe.motion", "off")) {
+    .tabbrowser-tab[selected] > .tab-stack > .tab-background {
+      animation: wf-tab-select 0.42s var(--wf-spring);
+    }
+
+    .tabbrowser-tab[zen-essential][selected] > .tab-stack {
+      animation: wf-essential-select 0.46s var(--wf-spring);
+    }
+  }
+}
+
+@keyframes wf-tab-select {
+  from {
+    scale: calc(1 - 0.035 * var(--wf-m)) calc(1 - 0.08 * var(--wf-m));
+    opacity: 0.35;
+  }
+}
+
+@keyframes wf-essential-select {
+  from { scale: calc(1 - 0.06 * var(--wf-m)); }
 }
 
 @media (prefers-reduced-motion: no-preference) {

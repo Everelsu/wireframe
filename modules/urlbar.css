@@ -431,6 +431,47 @@
   }
 }
 
+/* pref wireframe.urlbar.motion = fade: no morph, the panel just fades in
+   and out in place (the script marks it [wf-origin=fade]) */
+@media (prefers-reduced-motion: no-preference) {
+  :root[zen-single-toolbar="true"] #urlbar[breakout-extend][wf-origin="fade"]:not([wf-closing]) {
+    & > .urlbar-background {
+      transition: none !important;
+      animation: wf-fade-in 0.18s ease-out !important;
+      &::before, &::after { animation: wf-fade-in 0.18s ease-out !important; }
+    }
+    &::after { animation: wf-fade-in 0.18s ease-out !important; }
+    & > .urlbar-input-container { animation: wf-in-input-rise 0.24s var(--wf-morph) !important; }
+  }
+
+  :root[zen-single-toolbar="true"] #urlbar[breakout-extend][wf-closing="fade"] {
+    & > .urlbar-background,
+    & > .urlbar-background::before,
+    & > .urlbar-background::after,
+    &::after,
+    & > .urlbar-input-container {
+      transition: none !important;
+      animation: wf-out-fade 0.14s ease-in both !important;
+    }
+  }
+}
+
+/* URL bar animation off (or all motion off): the bar opens and closes at
+   once, as in plain Zen */
+@media (-moz-pref("wireframe.urlbar.motion", "off")), (-moz-pref("wireframe.motion", "off")) {
+  #urlbar,
+  #urlbar :is(.urlbar-background, .urlbar-input-container, .urlbarView, .urlbarView-row),
+  #urlbar .urlbar-background::before,
+  #urlbar .urlbar-background::after,
+  #urlbar::after {
+    animation: none !important;
+  }
+
+  #urlbar > .urlbar-background {
+    transition: none !important;
+  }
+}
+
 @keyframes wf-in-input-dock {
   from {
     transform: translate(var(--wf-in-dx, 0px), var(--wf-in-dy, 0px));
