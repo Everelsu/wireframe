@@ -346,10 +346,37 @@
     };
     applyFrame();
     Services.prefs.addObserver("wireframe.transparency", applyFrame);
+
+    // Firefox puts its own backdrop under the window too and wins over
+    // MicaForEveryone's. Mica (1) only ever shows a tint of the wallpaper,
+    // never what's behind the window, so a see-through window looked plain
+    // grey; use Acrylic (2) while transparent, and give back whatever was
+    // set before when transparency is turned off.
+    const BACKDROP = "widget.windows.mica.toplevel-backdrop";
+    const SAVED = "wireframe.transparency.saved-backdrop";
+    const syncBackdrop = () => {
+      const see = Services.prefs.getStringPref("wireframe.transparency", "off") !== "off";
+      if (see) {
+        if (!Services.prefs.prefHasUserValue(SAVED)) {
+          Services.prefs.setIntPref(SAVED, Services.prefs.prefHasUserValue(BACKDROP) ? Services.prefs.getIntPref(BACKDROP) : -1);
+        }
+        if (Services.prefs.getIntPref(BACKDROP, 0) !== 2) Services.prefs.setIntPref(BACKDROP, 2);
+      } else if (Services.prefs.prefHasUserValue(SAVED)) {
+        const old = Services.prefs.getIntPref(SAVED);
+        if (old < 0) Services.prefs.clearUserPref(BACKDROP);
+        else Services.prefs.setIntPref(BACKDROP, old);
+        Services.prefs.clearUserPref(SAVED);
+      }
+    };
+    syncBackdrop();
+    Services.prefs.addObserver("wireframe.transparency", syncBackdrop);
     // the window manager may repaint the frame its own way after these
     window.addEventListener("sizemodechange", applyFrame);
     window.addEventListener("activate", applyFrame);
-    window.addEventListener("unload", () => Services.prefs.removeObserver("wireframe.transparency", applyFrame), { once: true });
+    window.addEventListener("unload", () => {
+      Services.prefs.removeObserver("wireframe.transparency", applyFrame);
+      Services.prefs.removeObserver("wireframe.transparency", syncBackdrop);
+    }, { once: true });
   }
 
   // ---------- split by dragging a tab onto a tab ----------

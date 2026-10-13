@@ -131,7 +131,7 @@
    fades, so space gradients and their crossfade keep working; glass keeps
    a tint of them, clear shows the backdrop as is. */
 :root {
-  --wf-bg-alpha: 0.35;
+  --wf-bg-alpha: 0.2;
 }
 
 @media (-moz-pref("wireframe.transparency", "clear")) {
@@ -148,6 +148,13 @@
 
   #zen-browser-background {
     opacity: var(--wf-bg-alpha) !important;
+  }
+
+  /* Zen lays a light film over pages that are see-through themselves
+     (new tab, sites made transparent); on a see-through window that film
+     is what reads as grey */
+  #tabbrowser-tabpanels browser[transparent="true"] {
+    background: none !important;
   }
 
   /* the window ring would run along the top as a second frame over the
