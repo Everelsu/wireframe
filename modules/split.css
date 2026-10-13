@@ -1,0 +1,74 @@
+/* === SPLIT VIEW ===
+   Each pane is its own framed page with Zen's gaps between them; the outer
+   page frame steps aside so frames never double up. The pane you're in has
+   the full cream frame, the others a quiet one. In the sidebar the split
+   tabs read as one linked block: both titles at full width, one frame,
+   a bracket on the side. */
+
+#zen-tabbox-wrapper:has(#tabbrowser-tabpanels[zen-split-view="true"]) {
+  border-color: transparent !important;
+}
+
+#tabbrowser-tabpanels[zen-split-view="true"] > .browserSidebarContainer[is-zen-split="true"] {
+  outline: 2px solid color-mix(in srgb, var(--na-color-border) 30%, transparent) !important;
+  /* drawn in the gap: inside, the page itself would paint over it */
+  outline-offset: 0 !important;
+  border-radius: var(--na-user-border-radius) !important;
+  corner-shape: var(--wf-shape-panel) !important;
+  transition: outline-color 0.25s var(--wf-ease, ease) !important;
+
+  &.deck-selected {
+    outline-color: var(--na-color-border) !important;
+  }
+}
+
+/* sidebar: the split pair as one linked block */
+:root[zen-sidebar-expanded="true"] tab-group[split-view-group] > .tab-group-container {
+  position: relative;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 2px;
+  padding: 3px 3px 3px 10px !important;
+  border: 1px solid color-mix(in srgb, var(--na-color-border) 22%, transparent);
+  border-radius: var(--na-tab-border-radius) !important;
+  corner-shape: var(--wf-shape-tab) !important;
+  transition: border-color 0.2s var(--wf-ease, ease), background-color 0.2s var(--wf-ease, ease);
+
+  /* the bracket that ties the two tabs together */
+  &::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    border-radius: 1px;
+    background: color-mix(in srgb, var(--na-color-border) 35%, transparent);
+    transition: background-color 0.2s var(--wf-ease, ease);
+  }
+
+  & > .tabbrowser-tab {
+    flex: none !important;
+    width: 100% !important;
+    max-width: none !important;
+
+    &::after {
+      display: none !important;
+    }
+
+    /* the half that has focus */
+    &[visuallyselected] > .tab-stack > .tab-background {
+      background-color: color-mix(in srgb, currentColor 10%, transparent) !important;
+    }
+  }
+}
+
+:root[zen-sidebar-expanded="true"] tab-group[split-view-group][hasactivetab] > .tab-group-container {
+  border-color: var(--na-color-border);
+  background-color: transparent !important;
+  box-shadow: none !important;
+
+  &::before {
+    background: var(--na-color-border);
+  }
+}

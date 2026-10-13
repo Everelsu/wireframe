@@ -158,3 +158,44 @@ zen-workspace-creation form {
     outline-offset: -1px;
   }
 }
+
+/* === roomier lists ===
+   Zen sizes the library to 418px, which cuts most titles. Zen reads the
+   real width when it shifts the page, so a wider panel is safe. */
+zen-library {
+  width: clamp(560px, var(--zen-library-content-width, 0px), 95vw) !important;
+}
+
+.zen-library-row {
+  min-height: 46px;
+  padding-block: 6px !important;
+  gap: 12px !important;
+  transition: background-color 0.16s var(--wf-ease, ease) !important;
+
+  &:hover {
+    background: color-mix(in srgb, currentColor 7%, transparent) !important;
+  }
+}
+
+.zen-library-row-title {
+  font-size: 13px !important;
+}
+
+.zen-library-row-subtitle {
+  opacity: 0.55;
+}
+
+/* row actions fade in on hover instead of popping */
+.zen-library-row-actions {
+  transition: opacity 0.16s var(--wf-ease, ease) !important;
+}
+
+.zen-library-search-header {
+  display: flex !important;
+  gap: 8px;
+}
+
+.zen-library-search-box {
+  flex: 1 !important;
+  min-width: 0 !important;
+}

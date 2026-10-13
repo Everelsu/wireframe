@@ -879,6 +879,13 @@
   },
   {
     "type": "checkbox",
+    "property": "wireframe.compact.framed",
+    "label": "Keep the page frame (off = edge to edge)",
+    "value": "boolean",
+    "defaultValue": false
+  },
+  {
+    "type": "checkbox",
     "property": "wireframe.floating-compact-sidebar.enabled",
     "label": "Floating sidebar",
     "value": "boolean",

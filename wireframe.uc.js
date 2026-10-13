@@ -215,11 +215,22 @@
     const hide = HTMLElement.prototype.hidePopover;
     let closing = null;
     let replaying = false;
+    let escAt = 0;
+
+    // how the bar was opened; Zen drops its own markers before the panel
+    // collapses, so remember it for the closing animation
+    const origin = () => {
+      const compact = root.getAttribute("zen-compact-mode") === "true";
+      if (urlbar.hasAttribute("zen-newtab")) return "line";
+      if (urlbar.getAttribute("zen-floating-urlbar") === "true") return compact ? "center" : "frame";
+      return "dock";
+    };
 
     const finish = () => {
       const held = closing?.held ?? [];
       closing = null;
       urlbar.removeAttribute("wf-closing");
+      urlbar.removeAttribute("wf-origin");
       replaying = true;
       for (const step of held) {
         try {
@@ -237,21 +248,36 @@
       if (root.getAttribute("zen-single-toolbar") !== "true" || !urlbar.hasAttribute("breakout-extend")) {
         return false;
       }
-      const floating = urlbar.getAttribute("zen-floating-urlbar") === "true";
-      const compact = root.getAttribute("zen-compact-mode") === "true";
-      urlbar.setAttribute("wf-closing", floating ? (compact ? "center" : "frame") : "dock");
+      urlbar.setAttribute("wf-closing", urlbar.getAttribute("wf-origin") || origin());
       closing = { held: [], timer: setTimeout(finish, HOLD) };
       return true;
     };
 
     view.close = function (...args) {
+      if (replaying) return viewClose(...args);
+      const step = () => viewClose(...args);
       // focus already left the bar: this close is the start of a collapse
-      if (!replaying && (closing || (urlbar.hasAttribute("breakout-extend") && !urlbar.hasAttribute("focused") && begin()))) {
-        closing.held.push(() => viewClose(...args));
+      if (closing || (urlbar.hasAttribute("breakout-extend") && !urlbar.hasAttribute("focused") && begin())) {
+        closing.held.push(step);
+        return;
+      }
+      // Esc: Zen closes the results and the bar collapses as a consequence;
+      // treat it as the start of the collapse so the results go with it
+      if (urlbar.hasAttribute("breakout-extend") && performance.now() - escAt < 60 && begin()) {
+        closing.held.push(step);
         return;
       }
       return viewClose(...args);
     };
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && urlbar.hasAttribute("breakout-extend")) escAt = performance.now();
+    }, true);
+    // Escape would also hide the popover natively right after Firefox
+    // handled it; Firefox hides it itself anyway (held while we animate)
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && (closing || urlbar.hasAttribute("breakout-extend"))) e.preventDefault();
+    });
 
     urlbar.toggleAttribute = function (name, force) {
       if (name === "breakout-extend") {
@@ -264,6 +290,13 @@
           // state stays consistent, then open normally
           clearTimeout(closing.timer);
           finish();
+        }
+        if (force === true && !this.hasAttribute(name)) {
+          this.setAttribute("wf-origin", origin());
+          // Zen may set its markers right after the toggle
+          requestAnimationFrame(() => {
+            if (this.hasAttribute(name) && !closing) this.setAttribute("wf-origin", origin());
+          });
         }
       }
       return toggle.call(this, name, force);

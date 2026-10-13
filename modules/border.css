@@ -141,27 +141,7 @@ body > hbox {
     corner-shape: var(--wf-shape-window) !important;
 }
 
-/* window border on spit tabs */
-/* :root:has(#tabbrowser-tabpanels [zen-split]) .deck-selected {
-    border-radius: 0px !important;
-    border: 2px solid var(--na-color-border) !important;
-} */
-
-:root:has(#tabbrowser-tabpanels [zen-split]) #tabbrowser-tabpanels > * {
-    border-radius: 0 !important;
-}
-
-/* :root:has(#tabbrowser-tabpanels [zen-split]) .deck-selected {
-    border-radius: var(--na-window-border-radius) !important;
-} */
-
-:root:has(#tabbrowser-tabpanels [zen-split]) .browserSidebarContainer {
-    box-shadow: none !important;
-}
-
-:root:has(#tabbrowser-tabpanels [zen-split]) .browserSidebarContainer[is-zen-split="true"] {
-    margin: 0 0 !important;
-}
+/* split view: see modules/split.css */
 
 /* content window border radius
    Zen 1.23 derives .browserSidebarContainer's radius from
