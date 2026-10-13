@@ -312,6 +312,39 @@
   document.getElementById("appMenu-popup")?.addEventListener("popupshowing", addMenuItem);
   addMenuItem();
 
+  // ---------- transparency: no system border ----------
+  // With "accent color on title bars and window borders" on, Windows draws
+  // a thin border around the active window, and on a see-through window it
+  // shows as a stray dark line. No CSS reaches it: ask the window manager
+  // to leave it out while the window is transparent (Windows 11; older
+  // versions just ignore the call).
+  if (AppConstants.platform === "win") {
+    const DWMWA_BORDER_COLOR = 34;
+    const NONE = 0xfffffffe;
+    const DEFAULT = 0xffffffff;
+    const setBorder = () => {
+      const see = Services.prefs.getStringPref("wireframe.transparency", "off") !== "off";
+      try {
+        const { ctypes } = ChromeUtils.importESModule("resource://gre/modules/ctypes.sys.mjs");
+        const handle = window.docShell.treeOwner.QueryInterface(Ci.nsIBaseWindow).nativeHandle;
+        const dwm = ctypes.open("dwmapi.dll");
+        try {
+          const set = dwm.declare("DwmSetWindowAttribute", ctypes.winapi_abi, ctypes.int32_t,
+            ctypes.voidptr_t, ctypes.uint32_t, ctypes.voidptr_t, ctypes.uint32_t);
+          const color = ctypes.uint32_t(see ? NONE : DEFAULT);
+          set(ctypes.voidptr_t(ctypes.UInt64(handle)), DWMWA_BORDER_COLOR, color.address(), 4);
+        } finally {
+          dwm.close();
+        }
+      } catch (e) {
+        console.error("[Wireframe] window border:", e);
+      }
+    };
+    setBorder();
+    Services.prefs.addObserver("wireframe.transparency", setBorder);
+    window.addEventListener("unload", () => Services.prefs.removeObserver("wireframe.transparency", setBorder), { once: true });
+  }
+
   // ---------- split by dragging a tab onto a tab ----------
   // Zen splits when a dragged tab rests on another tab, but only within
   // its middle 20% for half a second, which is hard to hit. Widen it to the
