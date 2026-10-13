@@ -201,95 +201,80 @@
   addMenuItem();
 
   // ---------- url bar exit animation ----------
-  // Firefox drops the open panel out of the top layer at once, so CSS can't
-  // animate it away. Right before that happens we paint the panel into a
-  // canvas "ghost" and play the opening motion in reverse on it.
-  const snap = (u) => {
-    const r = u.getBoundingClientRect();
-    if (r.width < 50 || r.height < 30) return null;
-    const s = devicePixelRatio;
-    const c = document.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
-    c.width = Math.round(r.width * s);
-    c.height = Math.round(r.height * s);
-    const ctx = c.getContext("2d");
-    ctx.scale(s, s);
-    ctx.drawWindow(window, r.x, r.y, r.width, r.height, "rgba(0,0,0,0)");
-    return {
-      c, r, t: performance.now(),
-      floating: u.getAttribute("zen-floating-urlbar") === "true",
-      foot: parseFloat(getComputedStyle(u).paddingBottom) || 6,
-    };
-  };
-  // the results list closes a moment before the panel collapses: keep a
-  // snapshot of the full panel from then
-  let lastShot = null;
-
-  const ghostOut = (u) => {
-    const root = document.documentElement;
-    if (root.getAttribute("zen-single-toolbar") !== "true") return;
-    const shot = lastShot && performance.now() - lastShot.t < 250 ? lastShot : snap(u);
-    lastShot = null;
-    if (!shot) return;
-    const { c, r } = shot;
-    c.className = "wf-urlbar-ghost";
-    Object.assign(c.style, { left: `${r.x}px`, top: `${r.y}px`, width: `${r.width}px`, height: `${r.height}px` });
-    document.body.append(c);
-
-    const { floating, foot } = shot;
-    const compact = root.getAttribute("zen-compact-mode") === "true";
-    let frames, origin;
-    if (floating && !compact) {
-      // sink back into the page frame's bottom line
-      frames = [
-        { clipPath: "inset(0 0 0 0 round 14px 14px 0 0)", opacity: 1 },
-        { clipPath: `inset(calc(100% - ${foot + 2}px) 2% 0 2% round 14px 14px 0 0)`, opacity: 0.6, offset: 0.85 },
-        { clipPath: `inset(calc(100% - ${foot + 2}px) 2% 0 2% round 14px 14px 0 0)`, opacity: 0 },
-      ];
-    } else if (floating) {
-      origin = "50% 100%";
-      frames = [{ transform: "none", opacity: 1 }, { transform: "scale(0.3, 0.12)", opacity: 0 }];
-    } else {
-      // fold back into the docked bar in the sidebar
-      const d = document.getElementById("urlbar-container").getBoundingClientRect();
-      origin = "0 100%";
-      frames = [
-        { transform: "none", opacity: 1 },
-        {
-          transform: `translate(${d.x + 2 - r.x}px, ${d.bottom - 4 - r.bottom}px) scale(${(d.width - 4) / r.width}, ${(d.height - 8) / r.height})`,
-          opacity: 0,
-        },
-      ];
-    }
-    if (origin) c.style.transformOrigin = origin;
-    c.animate(frames, { duration: 280, easing: "cubic-bezier(0.4, 0, 0.7, 0.2)" })
-      .finished.finally(() => c.remove());
-  };
-
+  // Firefox drops the open panel at once. When the bar is closing (focus
+  // left it), we hold Firefox's close steps for a moment, mark the panel
+  // [wf-closing] so CSS plays the opening backwards on the live panel, then
+  // run the held steps in order. Reopening meanwhile completes the close first.
   const urlbar = document.getElementById("urlbar");
   if (urlbar && matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+    const HOLD = 320;
+    const root = document.documentElement;
     const view = gURLBar.view;
     const viewClose = view.close.bind(view);
-    view.close = function (...args) {
-      if (urlbar.hasAttribute("breakout-extend") && view.isOpen) {
+    const toggle = Element.prototype.toggleAttribute;
+    const hide = HTMLElement.prototype.hidePopover;
+    let closing = null;
+    let replaying = false;
+
+    const finish = () => {
+      const held = closing?.held ?? [];
+      closing = null;
+      urlbar.removeAttribute("wf-closing");
+      replaying = true;
+      for (const step of held) {
         try {
-          lastShot = snap(urlbar);
+          step();
         } catch (e) {
-          lastShot = null;
+          console.error("[Wireframe] url bar close:", e);
         }
+      }
+      replaying = false;
+    };
+
+    const begin = () => {
+      if (replaying) return false;
+      if (closing) return true;
+      if (root.getAttribute("zen-single-toolbar") !== "true" || !urlbar.hasAttribute("breakout-extend")) {
+        return false;
+      }
+      const floating = urlbar.getAttribute("zen-floating-urlbar") === "true";
+      const compact = root.getAttribute("zen-compact-mode") === "true";
+      urlbar.setAttribute("wf-closing", floating ? (compact ? "center" : "frame") : "dock");
+      closing = { held: [], timer: setTimeout(finish, HOLD) };
+      return true;
+    };
+
+    view.close = function (...args) {
+      // focus already left the bar: this close is the start of a collapse
+      if (!replaying && (closing || (urlbar.hasAttribute("breakout-extend") && !urlbar.hasAttribute("focused") && begin()))) {
+        closing.held.push(() => viewClose(...args));
+        return;
       }
       return viewClose(...args);
     };
 
-    const toggle = Element.prototype.toggleAttribute;
     urlbar.toggleAttribute = function (name, force) {
-      if (name === "breakout-extend" && force === false && this.hasAttribute(name)) {
-        try {
-          ghostOut(this);
-        } catch (e) {
-          console.error("[Wireframe] url bar exit animation:", e);
+      if (name === "breakout-extend") {
+        if (force === false && this.hasAttribute(name) && begin()) {
+          closing.held.push(() => toggle.call(this, name, force));
+          return false;
+        }
+        if (force === true && closing) {
+          // reopened while closing: finish the close first so Firefox's own
+          // state stays consistent, then open normally
+          clearTimeout(closing.timer);
+          finish();
         }
       }
       return toggle.call(this, name, force);
+    };
+
+    urlbar.hidePopover = function () {
+      if (closing && !replaying) {
+        closing.held.push(() => hide.call(this));
+        return;
+      }
+      return hide.call(this);
     };
   }
 

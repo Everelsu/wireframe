@@ -1,0 +1,44 @@
+/* === MOTION ===
+   One easing for the whole theme and soft transitions on state changes
+   (hover, selection, focus), so nothing snaps. Only colors, shadows,
+   opacity and scale are transitioned. */
+:root {
+  --wf-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tabbrowser-tab > .tab-stack > .tab-background,
+  zen-folder > .tab-group-label-container,
+  #tabs-newtab-button {
+    transition:
+      background-color 0.24s var(--wf-ease),
+      box-shadow 0.24s var(--wf-ease),
+      outline-color 0.24s var(--wf-ease),
+      scale 0.3s var(--wf-ease) !important;
+  }
+
+  .tabbrowser-tab :is(.tab-label, .tab-icon-image, .tab-close-button, .tab-reset-button) {
+    transition: opacity 0.2s var(--wf-ease), color 0.2s var(--wf-ease), filter 0.2s var(--wf-ease);
+  }
+
+  :is(#navigator-toolbox, #zen-library-panel, #appMenu-popup, menupopup) :is(.toolbarbutton-1, .subviewbutton, menuitem) {
+    transition: background-color 0.18s var(--wf-ease), color 0.18s var(--wf-ease), opacity 0.18s var(--wf-ease) !important;
+  }
+
+  .toolbarbutton-1 > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+    transition: background-color 0.18s var(--wf-ease), scale 0.25s var(--wf-ease) !important;
+  }
+
+  .zen-library-row,
+  .zen-library-tab::before,
+  .zen-library-space,
+  #urlbar .urlbarView-row,
+  #wf-settings :is(button, select, input) {
+    transition-timing-function: var(--wf-ease) !important;
+  }
+
+  .zen-current-workspace-indicator,
+  #zen-sidebar-foot-buttons > * {
+    transition: opacity 0.24s var(--wf-ease), background-color 0.18s var(--wf-ease);
+  }
+}

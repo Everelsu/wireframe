@@ -15,8 +15,9 @@
 #urlbar {
   color: var(--toolbox-textcolor) !important;
   --wf-urlbar-line: color-mix(in srgb, currentColor 14%, transparent);
-  --wf-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --wf-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --wf-ease-spring: cubic-bezier(0.34, 1.32, 0.64, 1);
+  --wf-ease-exit: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .urlbar-background {
@@ -82,6 +83,13 @@
   --wf-urlbar-cx: calc(var(--wf-sidebar-w) + (100vw - var(--wf-sidebar-w)) / 2);
   --wf-urlbar-left: calc(var(--wf-urlbar-cx) - var(--wf-urlbar-w) / 2);
   --wf-ring: 1.5px;
+  /* frosted surface: lighter at the top, denser at the bottom */
+  /* surface = the window's own color (what Zen paints the frame with),
+     lit a little at the top and dissolving into the window at the bottom */
+  --wf-win: var(--zen-main-browser-background-toolbar, var(--na-color-bg));
+  --wf-surf-top: color-mix(in srgb, var(--wf-win) 90%, var(--na-color-border) 10%);
+  --wf-surf: var(--wf-win);
+  --wf-surf-edge: color-mix(in srgb, var(--wf-win) 82%, transparent);
   --wf-foot: calc(var(--zen-element-separation, 8px) - var(--wf-ring));
   /* docked bar, relative to the surface's bottom-left corner */
   --wf-dock-x: calc(6px - var(--wf-urlbar-left));
@@ -135,13 +143,15 @@
     --wf-rt: var(--na-urlbar-border-radius);
     --wf-rb: 0px;
     --wf-bc: var(--na-color-border);
-    --wf-notch-r: 16px;
+    --wf-notch-r: 26px;
     --wf-notch-w: 2px;
     inset: var(--wf-bt) var(--wf-br) var(--wf-bb) var(--wf-bl) !important;
     border-radius: var(--wf-rt) var(--wf-rt) var(--wf-rb) var(--wf-rb) !important;
     border: var(--wf-notch-w) solid var(--wf-bc) !important;
     border-bottom: 0 !important;
-    box-shadow: 0 -18px 48px rgba(0, 0, 0, 0.35) !important;
+    background: linear-gradient(to bottom, var(--wf-surf-top), var(--wf-surf) 55%, var(--wf-surf-edge)) !important;
+    backdrop-filter: none !important;
+    box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.28) !important;
 
     /* concave fillets: the page frame's bottom line bends up into the sides
        (feathered a pixel so the curve is anti-aliased) */
@@ -157,7 +167,7 @@
         transparent calc(var(--wf-notch-r) - var(--wf-notch-w) - 0.6px),
         var(--na-color-border) calc(var(--wf-notch-r) - var(--wf-notch-w) + 0.4px),
         var(--na-color-border) calc(var(--wf-notch-r) - 0.6px),
-        var(--na-color-bg) calc(var(--wf-notch-r) + 0.4px);
+        var(--wf-surf-edge) calc(var(--wf-notch-r) + 0.4px);
     }
 
     &::before {
@@ -179,7 +189,8 @@
     right: 0;
     bottom: 0;
     height: calc(var(--wf-foot) + 2px);
-    background: var(--na-color-bg);
+    /* dissolves into the window instead of ending on a hard edge */
+    background: linear-gradient(to bottom, var(--wf-surf-edge), transparent);
     pointer-events: none;
   }
 }
@@ -217,7 +228,7 @@
 @media (prefers-reduced-motion: no-preference) {
   :root[zen-single-toolbar="true"] #urlbar[breakout-extend] {
     & > .urlbar-background {
-      animation: wf-ub-grow-dock 0.46s var(--wf-ease-out) !important;
+      animation: wf-ub-grow-dock 0.56s var(--wf-ease-out) !important;
 
       &::before, &::after {
         animation: wf-fade-in 0.2s ease 0.3s backwards !important;
@@ -229,43 +240,62 @@
     }
 
     & > .urlbar-input-container {
-      animation: wf-ub-input-dock 0.46s var(--wf-ease-out) !important;
+      animation: wf-ub-input-dock 0.56s var(--wf-ease-out) !important;
     }
 
     & .urlbarView {
-      animation: wf-ub-results 0.34s var(--wf-ease-out) 0.18s backwards !important;
+      animation: wf-ub-results 0.42s var(--wf-ease-out) 0.2s backwards !important;
     }
 
     /* keyboard: the frame line swells up into the panel; results wait
        until the surface has grown past them */
     &[zen-floating-urlbar="true"] {
       & > .urlbar-background {
-        animation: wf-ub-grow-frame 0.5s linear !important;
+        animation: wf-ub-grow-frame 0.6s linear !important;
         &::before, &::after { animation-delay: 0.12s !important; }
       }
       &::after { animation: none !important; }
       & > .urlbar-input-container { animation-name: wf-ub-input-rise !important; }
-      & .urlbarView { animation-delay: 0.26s !important; }
+      & .urlbarView { animation-delay: 0.3s !important; }
     }
   }
 
   /* compact */
   :root[zen-single-toolbar="true"][zen-compact-mode="true"] #urlbar[breakout-extend] {
     & > .urlbar-background {
-      animation: wf-ub-grow-dock 0.52s var(--wf-ease-spring) !important;
+      animation: wf-ub-grow-dock 0.62s var(--wf-ease-spring) !important;
     }
 
     &[zen-floating-urlbar="true"] {
-      & > .urlbar-background { animation: wf-ub-grow-center 0.5s linear !important; }
+      & > .urlbar-background { animation: wf-ub-grow-center 0.6s linear !important; }
       & > .urlbar-input-container { animation-name: wf-ub-input-rise !important; }
-      & .urlbarView { animation-delay: 0.26s !important; }
+      & .urlbarView { animation-delay: 0.3s !important; }
     }
   }
 
-  /* closing: the panel itself is animated out by wireframe.uc.js (a snapshot
-     ghost); the docked bar settles back in */
-  :root[zen-single-toolbar="true"] #urlbar:not([breakout-extend]) > .urlbar-input-container {
-    animation: wf-ub-dock-back 0.38s var(--wf-ease-out) 0.08s backwards !important;
+  /* closing: wireframe.uc.js holds the real close for a moment and sets
+     [wf-closing]; the panel folds back to where it came from */
+  :root[zen-single-toolbar="true"] #urlbar[breakout-extend][wf-closing] {
+    pointer-events: none !important;
+
+    & > .urlbar-background {
+      animation: wf-out-dock 0.3s var(--wf-ease-exit) both !important;
+      &::before, &::after { animation: wf-out-fade 0.12s ease-out both !important; }
+    }
+    &::after { animation: wf-out-fade 0.22s ease-out both !important; }
+    & > .urlbar-input-container { animation: wf-out-input-dock 0.3s var(--wf-ease-exit) both !important; }
+    & .urlbarView { animation: wf-out-results 0.16s ease-out both !important; }
+
+    &[wf-closing="frame"] {
+      & > .urlbar-background { animation: wf-out-frame 0.32s var(--wf-ease-exit) both !important; }
+      &::after { animation: none !important; }
+      & > .urlbar-input-container { animation: wf-out-input-sink 0.26s var(--wf-ease-exit) both !important; }
+    }
+
+    &[wf-closing="center"] {
+      & > .urlbar-background { animation: wf-out-center 0.32s var(--wf-ease-exit) both !important; }
+      & > .urlbar-input-container { animation: wf-out-input-sink 0.26s var(--wf-ease-exit) both !important; }
+    }
   }
 }
 
@@ -285,6 +315,7 @@
   }
 }
 
+
 /* surface: a sliver on the frame line swells into the input bar, then grows */
 @keyframes wf-ub-grow-frame {
   from {
@@ -302,6 +333,7 @@
     animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   }
 }
+
 
 /* surface: from a pill at the bottom center, wide first, then tall */
 @keyframes wf-ub-grow-center {
@@ -324,35 +356,106 @@
   }
 }
 
+
 @keyframes wf-ub-input-dock {
   from { transform: translate(var(--wf-dock-x), calc(-1 * var(--wf-dock-y))); }
 }
+
 
 @keyframes wf-ub-input-rise {
   from { transform: translateY(14px); opacity: 0; }
 }
 
+
 @keyframes wf-ub-results {
   from { opacity: 0; transform: translateY(16px); }
 }
 
-@keyframes wf-ub-dock-back {
-  from { transform: translateX(28px); opacity: 0; }
-}
 
 @keyframes wf-fade-in {
   from { opacity: 0; }
 }
 
-/* the page steps back while the bar is open; the frame (on the wrapper)
-   stays bright so it still connects to the panel */
-.browserSidebarContainer {
-  transition: filter 0.35s ease;
+/* exits: start moving at once, settle softly into the origin */
+@keyframes wf-out-dock {
+  to {
+    --wf-bt: calc(100% - var(--urlbar-height, 38px) - var(--wf-dock-y) - var(--wf-foot));
+    --wf-bb: calc(var(--wf-dock-y) + var(--wf-foot));
+    --wf-bl: var(--wf-dock-x);
+    --wf-br: calc(100% - var(--wf-dock-x) - var(--urlbar-width, 174px));
+    --wf-rt: var(--na-tab-border-radius);
+    --wf-rb: var(--na-tab-border-radius);
+    --wf-bc: transparent;
+    opacity: 0;
+  }
 }
 
+@keyframes wf-out-frame {
+  55% {
+    --wf-bt: calc(100% - var(--wf-foot) - var(--urlbar-height, 38px) - 14px);
+    --wf-bl: 0px;
+    --wf-br: 0px;
+  }
+  to {
+    --wf-bt: calc(100% - var(--wf-foot) - 2px);
+    --wf-bl: 3%;
+    --wf-br: 3%;
+    --wf-rt: 2px;
+    opacity: 0;
+  }
+}
+
+@keyframes wf-out-center {
+  55% {
+    --wf-bt: calc(100% - var(--wf-foot) - var(--urlbar-height, 38px) - 10px);
+    --wf-bl: 0px;
+    --wf-br: 0px;
+  }
+  to {
+    --wf-bt: calc(100% - var(--wf-foot) - var(--urlbar-height, 38px));
+    --wf-bl: 38%;
+    --wf-br: 38%;
+    --wf-rt: calc(var(--urlbar-height, 38px) / 2);
+    --wf-rb: calc(var(--urlbar-height, 38px) / 2);
+    opacity: 0;
+  }
+}
+
+@keyframes wf-out-input-dock {
+  to { transform: translate(var(--wf-dock-x), calc(-1 * var(--wf-dock-y))); opacity: 0; }
+}
+
+@keyframes wf-out-input-sink {
+  to { transform: translateY(12px); opacity: 0; }
+}
+
+@keyframes wf-out-results {
+  to { opacity: 0; transform: translateY(10px); }
+}
+
+@keyframes wf-out-fade {
+  to { opacity: 0; }
+}
+
+
+/* the page steps back while the bar is open: an overlay whose opacity is
+   animated on the compositor (a filter on the page re-rendered it every
+   frame). The frame lives on the wrapper, so it stays bright. */
 @media (-moz-pref("wireframe.urlbar.dim")) {
-  :root:has(#urlbar[breakout-extend]) .browserSidebarContainer.deck-selected {
-    filter: brightness(0.55);
+  .browserSidebarContainer.deck-selected::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    border-radius: inherit;
+    background: rgb(0 0 0 / 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s var(--wf-ease, ease);
+  }
+
+  :root:has(#urlbar[breakout-extend]:not([wf-closing])) .browserSidebarContainer.deck-selected::after {
+    opacity: 1;
   }
 }
 
@@ -440,11 +543,3 @@
   }
 }
 
-/* exit ghost painted by wireframe.uc.js */
-.wf-urlbar-ghost {
-  position: fixed;
-  z-index: 1001;
-  pointer-events: none;
-  border-radius: var(--na-urlbar-border-radius) var(--na-urlbar-border-radius) 0 0;
-  corner-shape: var(--wf-shape-urlbar) !important;
-}
