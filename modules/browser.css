@@ -123,11 +123,11 @@
 
 /* === TRANSPARENCY ===
    pref wireframe.transparency: off (default) | glass | clear.
-   A see-through window needs the system to draw behind all of it: Mica on
-   Windows (widget.windows.mica, which wireframe.uc.js turns on with this
-   setting; it takes a restart), always on macOS, an opt-in on Linux.
-   Without that backdrop a transparent window is just flat grey, so nothing
-   here applies until it's there. Only Zen's full-window background layer
+   The theme only clears its own layers; what shows through comes from the
+   system. On Windows that's MicaForEveryone with a rule for zen: backdrop
+   Mica / Acrylic and "Extend frame into client area" on (Zen's own Mica
+   only reaches the title strip). macOS always has a backdrop, Linux with
+   zen.widget.linux.transparency. Only Zen's full-window background layer
    fades, so space gradients and their crossfade keep working; glass keeps
    a tint of them, clear shows the backdrop as is. */
 :root {
@@ -139,16 +139,20 @@
 }
 
 @media (-moz-pref("wireframe.transparency", "glass")), (-moz-pref("wireframe.transparency", "clear")) {
-  @media (-moz-windows-mica) or (-moz-platform: macos) or ((-moz-platform: linux) and -moz-pref("zen.widget.linux.transparency")) {
-    /* only the browser window: userChrome also styles dialogs and other
-       chrome documents, which must keep their own background */
-    :root[windowtype="navigator:browser"],
-    #zen-main-app-wrapper {
-      background: transparent !important;
-    }
+  /* only the browser window: userChrome also styles dialogs and other
+     chrome documents, which must keep their own background */
+  :root[windowtype="navigator:browser"],
+  #zen-main-app-wrapper {
+    background: transparent !important;
+  }
 
-    #zen-browser-background {
-      opacity: var(--wf-bg-alpha) !important;
-    }
+  #zen-browser-background {
+    opacity: var(--wf-bg-alpha) !important;
+  }
+
+  /* the window ring would run along the top as a second frame over the
+     system's own border */
+  #browser::before {
+    border-top-color: transparent !important;
   }
 }

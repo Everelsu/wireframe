@@ -312,27 +312,6 @@
   document.getElementById("appMenu-popup")?.addEventListener("popupshowing", addMenuItem);
   addMenuItem();
 
-  // ---------- transparency ----------
-  // On Windows the window only turns see-through when Firefox draws Mica
-  // behind the whole of it, which widget.windows.mica switches on (read at
-  // startup). Follow the transparency setting with it; switching it back
-  // off only undoes what this did, never a value the user set themselves.
-  const syncMica = () => {
-    if (AppConstants.platform !== "win") return;
-    const want = Services.prefs.getStringPref("wireframe.transparency", "off") !== "off";
-    const byUs = Services.prefs.getBoolPref("wireframe.transparency.mica-by-theme", false);
-    const mica = Services.prefs.getBoolPref("widget.windows.mica", false);
-    if (want && !mica) {
-      Services.prefs.setBoolPref("widget.windows.mica", true);
-      Services.prefs.setBoolPref("wireframe.transparency.mica-by-theme", true);
-    } else if (!want && byUs) {
-      Services.prefs.clearUserPref("widget.windows.mica");
-      Services.prefs.clearUserPref("wireframe.transparency.mica-by-theme");
-    }
-  };
-  syncMica();
-  Services.prefs.addObserver("wireframe.transparency", syncMica);
-
   // ---------- split by dragging a tab onto a tab ----------
   // Zen splits when a dragged tab rests on another tab, but only within
   // its middle 20% for half a second, which is hard to hit. Widen it to the
