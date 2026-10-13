@@ -63,13 +63,27 @@
   }
 }
 
-/* ---------- open: geometry (single toolbar) ---------- */
+/* ---------- open: geometry (single toolbar) ----------
+   The panel is anchored to the bottom edge of the window. Its surface
+   (.urlbar-background) ends on the page frame's bottom line; below that a
+   "foot" (#urlbar::after) carries it down to the window frame, so there is
+   no seam between the panel and the window. */
+@property --wf-bt { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
+@property --wf-br { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
+@property --wf-bb { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
+@property --wf-bl { syntax: "<length-percentage>"; inherits: false; initial-value: 0px; }
+@property --wf-rt { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --wf-rb { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --wf-bc { syntax: "<color>"; inherits: false; initial-value: transparent; }
+
 :root[zen-single-toolbar="true"] #urlbar {
   --wf-sidebar-w: var(--zen-sidebar-width, 0px);
   --wf-urlbar-w: min(760px, calc(100vw - var(--wf-sidebar-w) - 64px));
   --wf-urlbar-cx: calc(var(--wf-sidebar-w) + (100vw - var(--wf-sidebar-w)) / 2);
   --wf-urlbar-left: calc(var(--wf-urlbar-cx) - var(--wf-urlbar-w) / 2);
-  /* docked bar, relative to the open panel's bottom-left corner */
+  --wf-ring: 1.5px;
+  --wf-foot: calc(var(--zen-element-separation, 8px) - var(--wf-ring));
+  /* docked bar, relative to the surface's bottom-left corner */
   --wf-dock-x: calc(6px - var(--wf-urlbar-left));
   --wf-dock-y: 6px;
 }
@@ -95,13 +109,15 @@
   max-width: none !important;
   z-index: 1000 !important;
   overflow: visible !important;
-  /* stands on the page frame; input row at the bottom, results above */
   top: auto !important;
-  bottom: var(--zen-element-separation, 8px) !important;
+  bottom: var(--wf-ring) !important;
+  padding-bottom: var(--wf-foot) !important;
   display: flex !important;
   flex-direction: column !important;
   font-size: 1.05em !important;
+  border-radius: var(--na-urlbar-border-radius) var(--na-urlbar-border-radius) 0 0 !important;
 
+  /* input row at the bottom, results grow upwards */
   & > .urlbar-input-container {
     order: 1;
   }
@@ -110,6 +126,62 @@
     border-top: none !important;
     border-bottom: 1px solid var(--wf-urlbar-line) !important;
   }
+
+  & > .urlbar-background {
+    --wf-bt: 0px;
+    --wf-br: 0px;
+    --wf-bb: var(--wf-foot);
+    --wf-bl: 0px;
+    --wf-rt: var(--na-urlbar-border-radius);
+    --wf-rb: 0px;
+    --wf-bc: var(--na-color-border);
+    --wf-notch-r: 16px;
+    --wf-notch-w: 2px;
+    inset: var(--wf-bt) var(--wf-br) var(--wf-bb) var(--wf-bl) !important;
+    border-radius: var(--wf-rt) var(--wf-rt) var(--wf-rb) var(--wf-rb) !important;
+    border: var(--wf-notch-w) solid var(--wf-bc) !important;
+    border-bottom: 0 !important;
+    box-shadow: 0 -18px 48px rgba(0, 0, 0, 0.35) !important;
+
+    /* concave fillets: the page frame's bottom line bends up into the sides
+       (feathered a pixel so the curve is anti-aliased) */
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      width: var(--wf-notch-r);
+      height: var(--wf-notch-r);
+      pointer-events: none;
+      --wf-notch-fill:
+        transparent calc(var(--wf-notch-r) - var(--wf-notch-w) - 0.6px),
+        var(--na-color-border) calc(var(--wf-notch-r) - var(--wf-notch-w) + 0.4px),
+        var(--na-color-border) calc(var(--wf-notch-r) - 0.6px),
+        var(--na-color-bg) calc(var(--wf-notch-r) + 0.4px);
+    }
+
+    &::before {
+      right: 100%;
+      background: radial-gradient(circle at 0 0, var(--wf-notch-fill));
+    }
+
+    &::after {
+      left: 100%;
+      background: radial-gradient(circle at 100% 0, var(--wf-notch-fill));
+    }
+  }
+
+  /* the foot: same surface, from the frame line down to the window frame */
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(var(--wf-foot) + 2px);
+    background: var(--na-color-bg);
+    pointer-events: none;
+  }
 }
 
 /* bar kept at the top of the sidebar: plain floating panel at the top */
@@ -117,6 +189,8 @@
   :root[zen-single-toolbar="true"] #urlbar[breakout-extend] {
     top: 20px !important;
     bottom: auto !important;
+    padding-bottom: 0 !important;
+    border-radius: var(--na-urlbar-border-radius) !important;
 
     & > .urlbar-input-container { order: 0; }
 
@@ -124,14 +198,34 @@
       border-top: 1px solid var(--wf-urlbar-line) !important;
       border-bottom: none !important;
     }
+
+    & > .urlbar-background {
+      --wf-bb: 0px;
+      --wf-rb: var(--na-urlbar-border-radius);
+      border-bottom: var(--wf-notch-w) solid var(--wf-bc) !important;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45) !important;
+
+      &::before, &::after { display: none; }
+    }
+
+    &::after { display: none; }
   }
 }
 
-/* ---------- open: motion ---------- */
+/* ---------- open: motion ----------
+   Only custom properties, transform and opacity are animated. */
 @media (prefers-reduced-motion: no-preference) {
   :root[zen-single-toolbar="true"] #urlbar[breakout-extend] {
     & > .urlbar-background {
       animation: wf-ub-grow-dock 0.46s var(--wf-ease-out) !important;
+
+      &::before, &::after {
+        animation: wf-fade-in 0.2s ease 0.3s backwards !important;
+      }
+    }
+
+    &::after {
+      animation: wf-fade-in 0.2s ease 0.3s backwards !important;
     }
 
     & > .urlbar-input-container {
@@ -145,7 +239,11 @@
     /* keyboard: the frame line swells up into the panel; results wait
        until the surface has grown past them */
     &[zen-floating-urlbar="true"] {
-      & > .urlbar-background { animation-name: wf-ub-grow-frame !important; animation-duration: 0.5s !important; }
+      & > .urlbar-background {
+        animation: wf-ub-grow-frame 0.5s linear !important;
+        &::before, &::after { animation-delay: 0.12s !important; }
+      }
+      &::after { animation: none !important; }
       & > .urlbar-input-container { animation-name: wf-ub-input-rise !important; }
       & .urlbarView { animation-delay: 0.26s !important; }
     }
@@ -158,66 +256,71 @@
     }
 
     &[zen-floating-urlbar="true"] {
-      & > .urlbar-background { animation: wf-ub-grow-center 0.5s var(--wf-ease-out) !important; }
+      & > .urlbar-background { animation: wf-ub-grow-center 0.5s linear !important; }
       & > .urlbar-input-container { animation-name: wf-ub-input-rise !important; }
       & .urlbarView { animation-delay: 0.26s !important; }
     }
   }
 
-  /* closing: the docked bar settles back in */
-  :root[zen-single-toolbar="true"] #urlbar:not([breakout-extend]) > :is(.urlbar-input-container) {
-    animation: wf-ub-dock-back 0.38s var(--wf-ease-out) !important;
+  /* closing: the panel itself is animated out by wireframe.uc.js (a snapshot
+     ghost); the docked bar settles back in */
+  :root[zen-single-toolbar="true"] #urlbar:not([breakout-extend]) > .urlbar-input-container {
+    animation: wf-ub-dock-back 0.38s var(--wf-ease-out) 0.08s backwards !important;
   }
 }
 
-/* surface: from the docked bar (left of the panel) to the full panel */
+/* surface: from the docked bar (a full pill) to the panel */
 @keyframes wf-ub-grow-dock {
   from {
-    top: calc(100% - var(--urlbar-height, 38px) - var(--wf-dock-y));
-    bottom: var(--wf-dock-y);
-    left: var(--wf-dock-x);
-    right: calc(100% - var(--wf-dock-x) - var(--urlbar-width, 174px));
-    border-radius: var(--na-tab-border-radius);
-    border-color: transparent;
-    background-color: color-mix(in srgb, var(--toolbox-textcolor) 8%, transparent);
+    --wf-bt: calc(100% - var(--urlbar-height, 38px) - var(--wf-dock-y) - var(--wf-foot));
+    --wf-bb: calc(var(--wf-dock-y) + var(--wf-foot));
+    --wf-bl: var(--wf-dock-x);
+    --wf-br: calc(100% - var(--wf-dock-x) - var(--urlbar-width, 174px));
+    --wf-rt: var(--na-tab-border-radius);
+    --wf-rb: var(--na-tab-border-radius);
+    --wf-bc: transparent;
   }
-  40% {
-    border-color: var(--na-color-border);
+  45% {
+    --wf-bc: var(--na-color-border);
   }
 }
 
-/* surface: from a flat sliver on the page frame's bottom line */
+/* surface: a sliver on the frame line swells into the input bar, then grows */
 @keyframes wf-ub-grow-frame {
   from {
-    top: calc(100% - 2px);
-    left: -4%;
-    right: -4%;
-    border-radius: 0;
+    --wf-bt: calc(100% - var(--wf-foot) - 2px);
+    --wf-bl: -3%;
+    --wf-br: -3%;
+    --wf-rt: 2px;
     animation-timing-function: cubic-bezier(0.45, 0, 0.25, 1);
   }
   30% {
+    --wf-bt: calc(100% - var(--wf-foot) - var(--urlbar-height, 38px) - 14px);
+    --wf-bl: 0px;
+    --wf-br: 0px;
+    --wf-rt: var(--na-urlbar-border-radius);
     animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-    top: calc(100% - var(--urlbar-height, 38px) - 14px);
-    left: 0;
-    right: 0;
   }
 }
 
-/* surface: from a small pill at the bottom center, wide first, then tall */
+/* surface: from a pill at the bottom center, wide first, then tall */
 @keyframes wf-ub-grow-center {
   from {
-    top: calc(100% - var(--urlbar-height, 38px));
-    left: 38%;
-    right: 38%;
+    --wf-bt: calc(100% - var(--wf-foot) - var(--urlbar-height, 38px));
+    --wf-bl: 38%;
+    --wf-br: 38%;
+    --wf-rt: calc(var(--urlbar-height, 38px) / 2);
+    --wf-rb: calc(var(--urlbar-height, 38px) / 2);
     opacity: 0;
     animation-timing-function: cubic-bezier(0.45, 0, 0.25, 1);
   }
   35% {
-    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-    top: calc(100% - var(--urlbar-height, 38px) - 10px);
-    left: 0;
-    right: 0;
+    --wf-bt: calc(100% - var(--wf-foot) - var(--urlbar-height, 38px) - 10px);
+    --wf-bl: 0px;
+    --wf-br: 0px;
+    --wf-rt: var(--na-urlbar-border-radius);
     opacity: 1;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   }
 }
 
@@ -235,59 +338,6 @@
 
 @keyframes wf-ub-dock-back {
   from { transform: translateX(28px); opacity: 0; }
-}
-
-/* ---------- open: the page frame wraps around the panel ----------
-   No bottom edge, square bottom corners, and two concave fillets that turn
-   the frame's bottom line up into the panel sides. Gradients are feathered
-   by a pixel so the curve is anti-aliased. */
-@media not (-moz-pref("wireframe.urlbar.position.top")) {
-  :root[zen-single-toolbar="true"] #urlbar[breakout-extend] {
-    --wf-notch-r: 16px;
-    --wf-notch-w: 2px;
-    border-end-start-radius: 0 !important;
-    border-end-end-radius: 0 !important;
-
-    & > .urlbar-background {
-      border: var(--wf-notch-w) solid var(--na-color-border) !important;
-      border-bottom: 0 !important;
-      border-end-start-radius: 0 !important;
-      border-end-end-radius: 0 !important;
-      box-shadow: 0 -18px 48px rgba(0, 0, 0, 0.35) !important;
-
-      &::before,
-      &::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        width: var(--wf-notch-r);
-        height: var(--wf-notch-r);
-        pointer-events: none;
-        --wf-notch-fill:
-          transparent calc(var(--wf-notch-r) - var(--wf-notch-w) - 0.6px),
-          var(--na-color-border) calc(var(--wf-notch-r) - var(--wf-notch-w) + 0.4px),
-          var(--na-color-border) calc(var(--wf-notch-r) - 0.6px),
-          var(--na-color-bg) calc(var(--wf-notch-r) + 0.4px);
-      }
-
-      &::before {
-        right: 100%;
-        background: radial-gradient(circle at 0 0, var(--wf-notch-fill));
-      }
-
-      &::after {
-        left: 100%;
-        background: radial-gradient(circle at 100% 0, var(--wf-notch-fill));
-      }
-
-      @media (prefers-reduced-motion: no-preference) {
-        &::before,
-        &::after {
-          animation: wf-fade-in 0.2s ease 0.3s backwards !important;
-        }
-      }
-    }
-  }
 }
 
 @keyframes wf-fade-in {
@@ -388,4 +438,13 @@
       margin-bottom: 10px !important;
     }
   }
+}
+
+/* exit ghost painted by wireframe.uc.js */
+.wf-urlbar-ghost {
+  position: fixed;
+  z-index: 1001;
+  pointer-events: none;
+  border-radius: var(--na-urlbar-border-radius) var(--na-urlbar-border-radius) 0 0;
+  corner-shape: var(--wf-shape-urlbar) !important;
 }

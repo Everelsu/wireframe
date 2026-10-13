@@ -92,6 +92,28 @@
   },
   {
     "type": "dropdown",
+    "property": "widget.windows.mica.toplevel-backdrop",
+    "label": "Windows: what shows through (restart)",
+    "value": "number",
+    "defaultValue": 1,
+    "restart": true,
+    "options": [
+      {
+        "value": 1,
+        "label": "Mica - wallpaper"
+      },
+      {
+        "value": 2,
+        "label": "Acrylic - windows behind"
+      },
+      {
+        "value": 3,
+        "label": "Mica Alt - wallpaper, deeper tint"
+      }
+    ]
+  },
+  {
+    "type": "dropdown",
     "property": "wireframe.browser.pattern",
     "label": "Background pattern",
     "value": "string",
